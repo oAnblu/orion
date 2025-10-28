@@ -1,0 +1,264 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;800&display=swap');
+
+:root {
+    --bg1: #101010;
+    --bg2: #171717;
+    --bg3: #262626;
+    --bg4: #44403C;
+    --tx1: #ccc9dcff;
+    --tx2: rgb(156, 139, 255);
+}
+
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    color: var(--tx1);
+    background-color: var(--bg1);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: row;
+}
+
+a.link {
+    font-weight: bold;
+    color: var(--tx2);
+    cursor: pointer;
+}
+
+.header {
+    text-align: center;
+    padding-top: 3em;
+    font-size: 1.5em;
+
+    h1 {
+        font-size: 2em;
+        margin: 8px;
+        font-weight: 800;
+    }
+
+
+}
+
+div#mainHead {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: auto;
+    margin-top: 1em;
+}
+
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    transition: .3s;
+
+    &.side {
+        width: 200px;
+        height: 100%;
+    }
+}
+
+#sidebar.side .grid {
+    gap: .2em;
+    justify-content: flex-start;
+
+    .onebtn {
+        padding: .2em 1em;
+        border-radius: 2em;
+        transition: .2s;
+        width: 100%;
+        background-color: transparent;
+        justify-content: flex-start;
+
+        a {
+            font-size: 1em;
+            transition: .5s;
+            width: fit-content;
+        }
+
+        &:hover {
+            a {
+                transform: scale(1.2);
+            }
+
+            background-color: var(--bg2);
+        }
+    }
+}
+
+
+div#toastdiv {
+    position: absolute;
+    bottom: 15vh;
+    display: none;
+    margin: auto;
+    width: 100%;
+    z-index: 99;
+}
+
+.toastInner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    width: fit-content;
+    padding: 0.5rem 1rem;
+    background: var(--bg2);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 1rem #00000085;
+    margin: auto;
+    cursor: pointer;
+    transition: .2s;
+}
+
+@keyframes pop {
+    0% {
+        padding: 3px 5px;
+    }
+}
+
+.grid {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    padding: 1em;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 600px;
+    margin: 0 auto;
+
+    .onebtn {
+        padding: 1em 2em;
+        border-radius: 5em;
+        transition: .5s;
+        background-color: var(--bg3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: pop .3s cubic-bezier(0.42, 1.67, 0.21, 0.90);
+
+        &.disabled {
+            opacity: .3;
+            pointer-events: none;
+        }
+
+        a {
+            font-size: 2em;
+            transition: .5s;
+            margin: 1em;
+        }
+
+        &:hover {
+            a {
+                transform: scale(1.2);
+            }
+
+            background-color: var(--bg4);
+        }
+
+        &.active {
+            background-color: var(--bg2) !important;
+        }
+    }
+}
+
+.disp {
+    display: none !important;
+}
+
+#appRunner {
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+    transition: .3s;
+
+    &>#mainframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background-color: var(--bg1);
+        color: white;
+    }
+}
+
+#loader {
+    width: 50px;
+    margin: 3em auto;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 8px solid #514b82;
+    animation:
+        l20-1 0.8s infinite linear alternate,
+        l20-2 1.6s infinite linear;
+}
+
+@keyframes l20-1 {
+    0% {
+        clip-path: polygon(50% 50%, 0 0, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%)
+    }
+
+    12.5% {
+        clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 0%, 100% 0%, 100% 0%)
+    }
+
+    25% {
+        clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 100% 100%, 100% 100%)
+    }
+
+    50% {
+        clip-path: polygon(50% 50%, 0 0, 50% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%)
+    }
+
+    62.5% {
+        clip-path: polygon(50% 50%, 100% 0, 100% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 100%)
+    }
+
+    75% {
+        clip-path: polygon(50% 50%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 50% 100%, 0% 100%)
+    }
+
+    100% {
+        clip-path: polygon(50% 50%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 50% 100%, 0% 100%)
+    }
+}
+
+@keyframes l20-2 {
+    0% {
+        transform: scaleY(1) rotate(0deg)
+    }
+
+    49.99% {
+        transform: scaleY(1) rotate(135deg)
+    }
+
+    50% {
+        transform: scaleY(-1) rotate(0deg)
+    }
+
+    100% {
+        transform: scaleY(-1) rotate(-135deg)
+    }
+}
+
+#persohome {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    margin-top: 2em;
+    height: 100%;
+    justify-content: space-between;
+    padding-bottom: 1em;
+}

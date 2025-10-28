@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrionClient</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="sidebar">
+        <div id="mainHead">OrionClient</div>
+        <div id="PromoHeader" class="header">
+            <span><b>OrionClient</b> is the</span>
+            <h1>Integrated ecosystem</h1>
+            <span>For <a href="https://rotur.dev" class="link">RoturTW</a></span>
+        </div>
+        <div id="loader"></div>
+        <div id="persohome">
+            <div class="grid">
+                <div class="onebtn" data-name="claw"><a>Claw</a></div>
+                <div class="onebtn" data-name="orichats"><a>OriginChats</a></div>
+                <div class="onebtn disabled" data-name="claw"><a>Contacts</a></div>
+                <div class="onebtn disabled" data-name="claw"><a>Credits</a></div>
+            </div>
+            <div>Not <span class="username_display">darkdot</span>? <a onclick="logoutofrtr();" class="link">Sign out</a></div>
+        </div>
+    </div>
+
+    <div id="appRunner">
+        <iframe id="mainframe" src=""></iframe>
+    </div>
+    <div id="toastdiv">
+        <div class="toastInner">
+
+            <div id="toastdivtext">
+
+            </div>
+        </div>
+    </div>
+    <script src="rotur.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

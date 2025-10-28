@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>OrionClient</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+	<link href="webmanifest.json" rel="manifest">
+	<link rel="icon" type="image/webp" href="n.png">
+</head>
+
+<body>
+    <div id="orion">
+        <span class="orion">OrionClient</span>
+        <div class="loader"></div>
+    </div>
+    <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <div class="session">
+        <div class="server_ui">
+
+            <div class="channels">
+                <div class="server_data top_panel">OriginChats</div>
+                <div id="channels">
+                    <div class="single_chnl">
+                        <div class="symb">
+                            person
+                        </div>
+                        <div class="name">
+                            General
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="feed">
+                <div class="channel_name top_panel">General</div>
+                <div id="msgs_list">
+                    <div class="sing_msg">
+                        <img src="https://rotur.dev/Rotur%20Logo.png" class="pfp">
+                        <div class="data">
+                            <div class="header">
+                                <div class="name">darkdot</div>
+                                <div class="time">6:48 PM</div>
+                            </div>
+                            <p>This is a text</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="replyPrompt" class="hidden">
+                    <div>Replying to <div id="replyun">darkdot</div>
+                    </div>
+                    <div class="clsbtn symb">close</div>
+                </div>
+                <div class="msg_area">
+
+                    <input type="text" placeholder="Message #General" id="mainTxtAr">
+                </div>
+            </div>
+            <div class="members_list">
+                <div class="profile_card top_panel">
+                    <img class="pfp" id="userAvatar" src="https://rotur.dev/Rotur%20Logo.png">
+                    <div class="data">
+                        <div class="name" id="usernameLabel">darkdot</div>
+                        <div class="status">Online</div>
+                    </div>
+                    <div class="settings_btn"></div>
+                </div>
+                <div class="members_lists">
+                    <div class="sublist_title">Online</div>
+                    <div class="members_sublist">
+                        <div class="profile_card">
+                            <img class="pfp" src="https://rotur.dev/Rotur%20Logo.png">
+                            <div class="data">
+                                <div class="name">darkdot</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js" async defer></script>
+</body>
+
+</html>
