@@ -20,7 +20,7 @@ function openApp(name) {
         inView = true;
     }
 
-    iframe.src = "/apps/" + name;
+    iframe.src = "apps/" + name;
 }
 
 function clearActive() {
