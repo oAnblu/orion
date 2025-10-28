@@ -55,79 +55,8 @@ function escapeHTML(str) {
 }
 
 function roturToken() {
-    return localStorage.getItem("rotur_auth_token");
+    return window.parent.roturExtension.userToken;
 }
-
-const RoturAuth = {
-    is_connected: true,
-    authenticated: !!roturToken(),
-
-    login_prompt({ STYLE_URL }) {
-        if (!this.is_connected) {
-            console.error("Not Connected");
-            return;
-        }
-        if (this.authenticated) {
-            console.error("Already Logged In");
-            return;
-        }
-
-        const e = document.createElement("iframe");
-        e.id = "rotur-auth";
-        e.src = `https://rotur.dev/auth?styles=${encodeURIComponent(STYLE_URL)}`;
-        Object.assign(e.style, {
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            border: "none",
-            zIndex: 9999,
-            pointerEvents: "auto",
-            background: "#111",
-        });
-        document.body.appendChild(e);
-
-        const _roturAuthHandler = (a) => {
-            if (
-                "https://rotur.dev" === a.origin &&
-                a.data?.type === "rotur-auth-token"
-            ) {
-                e.remove();
-                window.removeEventListener("message", _roturAuthHandler);
-                console.log("Rotur Auth Token received", a.data.token);
-                this.loginToken({
-                    TOKEN: a.data.token,
-                    VALIDATOR: localStorage.getItem("validator"),
-                });
-            }
-        };
-        window.addEventListener("message", _roturAuthHandler);
-        return "Auth window opened";
-    },
-
-    async loginToken({ TOKEN }) {
-        try {
-            if (!TOKEN) throw new Error("Missing Rotur auth token");
-            localStorage.setItem("rotur_auth_token", TOKEN);
-            localStorage.removeItem("validator");
-            this.authenticated = true;
-            document.getElementById("authPrompt")?.remove();
-            if (state.validator_key && ws?.readyState === 1) {
-                await generateValidatorAndAuth(state.validator_key, TOKEN);
-            } else {
-                connectWebSocket();
-            }
-        } catch (err) {
-            console.error("Token storage error", err);
-            const box = document.getElementById("errorBox");
-            if (box) {
-                box.style.display = "flex";
-                document.getElementById("errorMessage").textContent = err.message;
-            }
-        }
-    },
-};
 
 function attachWsHandlers() {
     ws.onopen = () => console.log("WebSocket connected; awaiting handshake...");
@@ -353,10 +282,6 @@ function generateValidatorAndAuth(vKey, authTok) {
         localStorage.setItem("validator", j.validator);
         ws.send(JSON.stringify({ cmd: "auth", validator: j.validator }));
     })();
-}
-
-function roturToken() {
-    return localStorage.getItem("rotur_auth_token");
 }
 
 function userRoles() {
@@ -767,15 +692,7 @@ function updateUserPanel() {
         if (avatar) avatar.src = "assets/unknown.png";
     }
 }
-
-if (roturToken()) {
-    document.getElementById("authPrompt")?.remove();
-    connectWebSocket();
-} else {
-    RoturAuth.login_prompt({
-        STYLE_URL: location.origin + "/assets/style.css",
-    });
-}
+connectWebSocket();
 
 var loaderElement = document.getElementById("orion")
 var loader = {
