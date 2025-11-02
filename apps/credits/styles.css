@@ -1,0 +1,313 @@
+ html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--col-bg1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        input,
+        button,
+        textarea {
+            outline: 0;
+            border: 0;
+            background-color: inherit;
+            color: inherit;
+        }
+
+        .navBar {
+            display: flex;
+            flex-direction: row;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            align-items: stretch;
+        }
+
+        .navBar .searchContainer {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background-color: var(--col-bg2);
+            flex: 1;
+            justify-content: space-between;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            align-items: stretch;
+        }
+
+        .navBar .searchContainer input {
+            font-size: 1rem;
+            flex: 1;
+        }
+
+        .navBar .searchContainer .button {
+            color: var(--col-txt1);
+            border-radius: 0.5rem;
+            display: flex;
+            cursor: pointer;
+            align-items: center;
+            opacity: .5;
+        }
+
+        .navBar .pfpOnNavBar {
+            aspect-ratio: 1 / 1;
+            height: auto;
+            width: 3rem;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+
+        .navBar .pfpOnNavBar img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            background-color: transparent;
+
+        }
+
+        .widgets {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            flex: 1;
+        }
+
+        .widget {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.3rem;
+            padding: 0.5rem;
+            background: var(--col-bg2);
+            border-radius: 0.5rem;
+        }
+
+        .widget .value {
+            font-size: 2em;
+            font-weight: 400;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .widget .value svg {
+            height: 2rem;
+            width: 2rem;
+        }
+
+        .mainUI {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            padding-top: 0;
+            justify-content: space-between;
+        }
+
+        .chart {
+            flex: 3;
+
+            padding: 0.5rem;
+            background: var(--col-bg2);
+            border-radius: 0.5rem;
+        }
+
+        .chart canvas {
+            width: 100%;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            z-index: 2;
+            background: var(--col-bg1);
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1em;
+            animation: fadein .3s;
+        }
+
+        div#paymentscreen {
+            &>input,
+            button {
+                animation: pop .3s;
+            }
+        }
+
+        input#sendmoneyvalue {
+            text-align: center;
+            min-width: 0;
+            width: 4em;
+            font-size: 4em;
+            background: var(--col-bg2);
+            border-radius: .3em;
+            border-bottom: 3px solid transparent;
+            transition: .5s border;
+
+            &:focus {
+                border-radius: .3em .3em 0 0;
+                border-bottom: 3px solid var(--col-bgh);
+            }
+        }
+
+        small#sendmoneystat {
+            font-size: 1em;
+            opacity: .7;
+        }
+
+        input#sendmoneynote {
+            width: 5em;
+            text-align: center;
+            background-color: var(--col-bg2);
+            padding: .5em;
+            border-radius: 2em;
+        }
+
+        .aboutotsend {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: .5em;
+        }
+
+        button#sendmoneybtn {
+            background-color: var(--col-bgh);
+            color: var(--col-txth);
+            display: inline-flex;
+            padding: .5em;
+            border-radius: 2em;
+            align-items: center;
+
+            &:hover>.totalPaymentdisp {
+                width: 5em;
+            }
+
+            & .totalPaymentdisp {
+                width: 0;
+                overflow: hidden;
+                transition: width .3s;
+                white-space: nowrap;
+            }
+        }
+
+        @keyframes cancelbtn {
+            0% {
+                margin-top: 0;
+            }
+
+            100% {
+                margin-top: 2em;
+            }
+        }
+
+        .sendmoneycancel {
+            background-color: var(--col-bg2);
+            border-radius: 2em;
+            padding: .5em 1em;
+            margin-top: 2em;
+            animation: cancelbtn .3s !important;
+        }
+
+        #gainorloss {
+            padding: 5px;
+            display: flex;
+            font-size: 15px;
+            background-color: rgb(165, 81, 81);
+            color: white;
+            border-radius: 50%;
+        }
+
+        .label {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: .5em;
+            justify-content: space-between;
+            opacity: .5;
+            font-size: small;
+        }
+
+        .loader {
+            width: calc(100% - 1rem);
+            height: 0px;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            margin: 0 .5em;
+            transition: .5s;
+        }
+
+        .loader::after {
+            content: '';
+            width: 96px;
+            height: 3px;
+            background: #ffffff4e;
+            position: absolute;
+            border-radius: 5px;
+            top: 0;
+            left: 0;
+            box-sizing: border-box;
+            animation: hitZak 0.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes hitZak {
+            0% {
+                left: 0;
+                transform: translateX(-1%);
+            }
+
+            100% {
+                left: 100%;
+                transform: translateX(-99%);
+            }
+        }
+
+
+        @keyframes pop {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: auto;
+            }
+        }
+
+        .rtr {
+            display: inline;
+
+            &>svg {
+                height: 17px;
+                width: 17px;
+                transform: translateY(3px);
+            }
+        }
+
+        div#note_abt_tax {
+            background: #ff67672b;
+            padding: .3em .7em;
+            border-radius: 2em;
+        }
