@@ -177,8 +177,8 @@ async function loadFeed(type = 'claw', obj, useOffset = false, torefresh = false
 
         if (post.attachment) {
             const url = post.attachment;
-            if (url.startsWith("https://i.ibb.co/DH3jt4G2/g.png/")) {
-                const text = url.replace("https://i.ibb.co/DH3jt4G2/g.png/", "");
+            if (url.startsWith("https://postimg.cc/3dPn6tGN/b62c7700/g.png/")) {
+                const text = url.replace("https://postimg.cc/3dPn6tGN/b62c7700/g.png/", "");
                 postContent.textContent = text;
             } else {
                 const postImg = document.createElement("img");
@@ -341,7 +341,7 @@ async function newpost() {
     let content = document.getElementById("postinput").value;
 
     if (msgLenLim == 460) {
-        attachments = "&attachment=" + encodeURIComponent("https://i.ibb.co/DH3jt4G2/g.png/" + content);
+        attachments = "&attachment=" + "https://postimg.cc/3dPn6tGN/b62c7700/g.png/" + encodeURIComponent(content);
         content = '*';
     }
     await fetch(`https://claw.rotur.dev/post?content=${content}&os=NovaOS&auth=${window.parent.roturExtension.userToken}${attachments}`);
