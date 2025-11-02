@@ -57,7 +57,7 @@
             
             <div class="feed">
                 <div class="postmsgsection">
-                <textarea id="postinput" placeholder="What is going on!?"></textarea>
+                <textarea id="postinput" onkeyup="updmsglentxt()" placeholder="What is going on!?"></textarea>
                 <div class="postsubfoot">
                     <div class="grp"><button onclick="attachthings(this)" id="attachbtn">
                         <span>Attach</span>
@@ -68,7 +68,7 @@
                     <button onclick="toggleOrionEnc()" id="attachbtn">
                         <span>Orion</span>
                         <span class="material-symbols-rounded">
-                            power
+                            mode_off_on
                         </span>
                     </button>
                     <button onclick="newpost()" class="postbtn buttonlike">
