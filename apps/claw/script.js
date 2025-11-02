@@ -176,10 +176,16 @@ async function loadFeed(type = 'claw', obj, useOffset = false, torefresh = false
         }
 
         if (post.attachment) {
-            const postImges = document.createElement("img");
-            postImges.classList.add("postimg");
-            postImges.src = post.attachment;
-            postContent.appendChild(postImges);
+            const url = post.attachment;
+            if (url.startsWith("https://i.ibb.co/DH3jt4G2/g.png/")) {
+                const text = url.replace("https://i.ibb.co/DH3jt4G2/g.png/", "");
+                postContent.textContent = text;
+            } else {
+                const postImg = document.createElement("img");
+                postImg.classList.add("postimg");
+                postImg.src = url;
+                postContent.appendChild(postImg);
+            }
         }
 
         postElement.appendChild(postContent);
@@ -333,9 +339,9 @@ async function likepost(id) {
 async function newpost() {
     if (!checkifaccs()) { return }
     let content = document.getElementById("postinput").value;
-    
+
     if (msgLenLim == 460) {
-        attachments = "&attachment=" + encodeURIComponent("http://runnova.github.io/orion/g.png?e=" + content);
+        attachments = "&attachment=" + encodeURIComponent("https://i.ibb.co/DH3jt4G2/g.png/" + content);
         content = '*';
     }
     await fetch(`https://claw.rotur.dev/post?content=${content}&os=NovaOS&auth=${window.parent.roturExtension.userToken}${attachments}`);
@@ -694,12 +700,12 @@ async function moreinfo() {
 }
 
 async function toggleOrionEnc() {
-    
+
     if (msgLenLim == 460) {
         await window.parent.say("Turned off Orion Encoding", "success");
         msgLenLim = 100;
         updmsglentxt();
-        return;   
+        return;
     }
     if (await window.parent.justConfirm("Turn on Orion Encoding?", "This increases the message limit to 460 charecters, BUT will appear as an error on other clients.")) {
         await window.parent.say("<h1>You now have Orion Encoding.</h1> Users on other clients will not be able to see your messages. But users on this client sees it with a max length of 460. We know Orion Encoding is unhealthy. But if we didn't, someone bad will create this.", "success");
