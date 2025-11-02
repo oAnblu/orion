@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>roturVoice WebRTC Call</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <script src="roturVoice.js" defer></script>
+    <link rel="stylesheet" href="../../nova.css">
+</head>
+
+<body>
+
+    <body>
+        <h1>roturVoice Client Early BETA</h1>
+        <div>
+            <input id="peerName" placeholder="Your ID">
+            <button id="connectBtn">Connect</button>
+        </div>
+        <div><input id="targetPeer" placeholder="Target ID">
+        <button id="callBtn">Call</button></div>
+        <div><button id="answerBtn">Answer</button>
+        <button id="hangupBtn">Hang Up</button></div>
+        <p id="status"></p>
+        <script src="script.js" defer>
+
+        </script>
+    </body>
+
+</html>

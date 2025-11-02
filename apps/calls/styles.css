@@ -1,0 +1,28 @@
+body {
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin-top: 4rem;
+  gap: 0.5rem;
+}
+button, input {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: var(--col-bg2);
+  border: var(--box-crisp);
+  border-radius: var(--siz-radius1);
+  color: var(--col-txt1);
+}
+
+div {
+    width: 400px;
+    color: white;
+    display: flex;
+    gap: .5em;
+    * {
+        flex: 1;
+    }
+}
