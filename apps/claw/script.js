@@ -1,4 +1,5 @@
 var feed = document.getElementById("feed");
+var msgLenLim = 100;
 async function attachthings(obj) {
     attachments = "&attachment=" + await window.parent.ask('Enter a URL to your file:' || '')
     obj.innerHTML = `
@@ -106,6 +107,11 @@ async function loadFeed(type = 'claw', obj, useOffset = false, torefresh = false
 
     let lastUser = null;
 
+    if (posts.length < 1) {
+        feedContainer.innerHTML = `You do not follow anyone. Follow someone to see the feed.`;
+        clawloader.hide();
+        return;
+    }
     posts.forEach(post => {
         const postElement = document.createElement("div");
         postElement.classList.add("randompost");
@@ -143,7 +149,7 @@ async function loadFeed(type = 'claw', obj, useOffset = false, torefresh = false
         const postTimestamp = document.createElement("div");
         postTimestamp.classList.add("posttimestamp");
         if (post.os) {
-            if (post.os === "novaOS") {
+            if (post.os === "NovaOS") {
                 postTimestamp.innerHTML = timeSince(post.timestamp) + " | Posted here";
             } else {
                 postTimestamp.textContent = timeSince(post.timestamp) + " | Posted on " + post.os;
@@ -320,15 +326,19 @@ function timeSince(timestamp) {
 async function likepost(id) {
     if (!checkifaccs()) { return }
     await fetch("https://claw.rotur.dev/rate?id=" + id + "&auth=" +
-        window.parent.roturExtension.userToken + "&rating=1&os=novaOS");
+        window.parent.roturExtension.userToken + "&rating=1&os=NovaOS");
     loadFeed()
 }
 
 async function newpost() {
     if (!checkifaccs()) { return }
     let content = document.getElementById("postinput").value;
-
-    await fetch(`https://claw.rotur.dev/post?content=${content}&os=novaOS&auth=${window.parent.roturExtension.userToken}${attachments}`);
+    
+    if (msgLenLim == 460) {
+        attachments = "&attachment=" + encodeURIComponent("http://runnova.github.io/g.png?e=" + content);
+        content = '*';
+    }
+    await fetch(`https://claw.rotur.dev/post?content=${content}&os=NovaOS&auth=${window.parent.roturExtension.userToken}${attachments}`);
 
     if (attachments) {
         document.getElementById("attachbtn").innerHTML = `
@@ -344,7 +354,7 @@ async function newpost() {
 async function followuser() {
     if (!checkifaccs()) { return }
     let content = document.getElementById("postinput").value;
-    await fetch("https://claw.rotur.dev/post?content=" + content + "&os=novaOS&auth=" +
+    await fetch("https://claw.rotur.dev/post?content=" + content + "&os=NovaOS&auth=" +
         window.parent.roturExtension.userToken);
 }
 
@@ -512,14 +522,14 @@ async function listprofilefeatures(name = selecteduser) {
         followbtntxt.innerHTML = "Unfollow";
         followbtn.style.background = "#2f2f2f";
         followbtn.onclick = async () => {
-            await fetch("https://claw.rotur.dev/unfollow?username=" + name + "&os=novaOS&auth=" +
+            await fetch("https://claw.rotur.dev/unfollow?username=" + name + "&os=NovaOS&auth=" +
                 window.parent.roturExtension.userToken);
         }
     } else {
         followbtntxt.innerHTML = "Follow";
         followbtn.style.background = "#4e5fa7";
         followbtn.onclick = async () => {
-            await fetch("https://claw.rotur.dev/follow?username=" + name + "&os=novaOS&auth=" +
+            await fetch("https://claw.rotur.dev/follow?username=" + name + "&os=NovaOS&auth=" +
                 window.parent.roturExtension.userToken);
         }
     }
@@ -537,9 +547,7 @@ async function viewprofile(name) {
 function checkifaccs() {
     let signedinch = window.parent.roturExtension.loggedIn();
     if (!signedinch) {
-        window.parent.toast("You don't have a rotur account linked.");
-        window.parent.useHandler('content_store', { 'opener': 'viewapp', 'data': 'Rotur Dashboard@adthoughtsglobal', 'run': 'true' });
-        loadFeed()
+        window.parent.say("You don't have a rotur account linked.");
     }
     return signedinch;
 }
@@ -554,14 +562,6 @@ function greenflag() {
     }
 }
 greenflag();
-document.getElementById("postinput").addEventListener("focus", () => {
-    document.getElementById("toolsection").style.flex = "4";
-    document.getElementById("feedsection").style.opacity = "0.5";
-});
-document.getElementById("postinput").addEventListener("blur", () => {
-    document.getElementById("toolsection").style.flex = "1";
-    document.getElementById("feedsection").style.opacity = "1";
-});
 
 async function addreply() {
     let content = document.getElementById("addAreplyInp").value;
@@ -691,4 +691,24 @@ async function moreinfo() {
     let following = await resp2.json();
 
     window.parent.say(`<p>Following: ${following.following.join(", ")}</p><p>Followers: ${followers.followers.join(", ")}</p>`);
+}
+
+async function toggleOrionEnc() {
+    
+    if (msgLenLim == 460) {
+        await window.parent.say("Turned off Orion Encoding", "success");
+        msgLenLim = 100;
+        updmsglentxt();
+        return;   
+    }
+    if (await window.parent.justConfirm("Turn on Orion Encoding?", "This increases the message limit to 460 charecters, BUT will appear as an error on other clients.")) {
+        await window.parent.say("<h1>You now have Orion Encoding.</h1> Users on other clients will not be able to see your messages. But users on this client sees it with a max length of 460. We know Orion Encoding is unhealthy. But if we didn't, someone bad will create this.", "success");
+        msgLenLim = 460;
+        updmsglentxt();
+    }
+}
+
+function updmsglentxt() {
+    var msglendisp = document.getElementById("postlen");
+    msglendisp.innerText = document.getElementById("postinput").value.length + "/" + msgLenLim;
 }

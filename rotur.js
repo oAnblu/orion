@@ -393,7 +393,7 @@ class RoturExtension {
 
         const e = document.createElement("iframe");
         e.id = "rotur-auth";
-        e.src = `https://rotur.dev/auth?system=novaOS&styles=${encodeURIComponent(STYLE_URL)}`;
+        e.src = `https://rotur.dev/auth?system=NovaOS&styles=${encodeURIComponent(STYLE_URL)}`;
         Object.assign(e.style, {
             width: "70%",
             height: "80%",
@@ -1662,9 +1662,6 @@ class RoturExtension {
 
 var roturExtension = null;
 let localroturdata = localStorage.getItem("orion-rotur");
-if (localroturdata) {
-    attemptConnection();
-}
 
 async function attemptConnection() {
     if (roturExtension?.is_connected) {
@@ -1672,7 +1669,7 @@ async function attemptConnection() {
     } else if (!roturExtension) {
         roturExtension = new RoturExtension();
     }
-    roturExtension.connectToServer({ DESIGNATION: "nva", SYSTEM: "novaOS", VERSION: "2" });
+    roturExtension.connectToServer({ DESIGNATION: "nva", SYSTEM: "NovaOS", VERSION: "2" });
 }
 
 async function logoutofrtr() {

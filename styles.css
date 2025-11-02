@@ -18,7 +18,6 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
     color: var(--tx1);
     background-color: var(--bg1);
     height: 100%;
@@ -261,4 +260,144 @@ div#toastdiv {
     height: 100%;
     justify-content: space-between;
     padding-bottom: 1em;
+}
+
+.modal {
+	background-color: transparent;
+	border: none;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	&>.modal-items {
+		outline: 0;
+		padding: 1em;
+		border-radius: var(--siz-radius1);
+		color: var(--col-txt1);
+		background: var(--col-bg2);
+		text-align: left;
+		max-height: 80%;
+		width: 80%;
+		max-width: 280px;
+		box-shadow: 0 0 10em #000000ba;
+		border: var(--box-crisp);
+		;
+		animation: pop var(----time1);
+	}
+
+}
+
+.modal-items {
+	outline: 0;
+	display: flex;
+	overflow: hidden;
+	flex-direction: column;
+	overflow-y: auto;
+
+	&>p {
+		outline: 0;
+	}
+
+	&>h1 {
+		margin: 0;
+		border-bottom: 1px solid #80808082;
+		padding-bottom: .5em;
+	}
+
+	& span.dangertext {
+		color: inherit;
+		font-weight: bold;
+	}
+}
+
+.modal-items .button-container {
+	gap: .5em;
+	margin-top: .5em;
+	display: flex;
+}
+
+.modal-items .modal-icon {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin-bottom: 10px;
+	opacity: .8;
+	font-size: 2em;
+}
+
+.modal-items input {
+	padding: .5em .8em;
+	width: calc(100% - 1.7em);
+	color: inherit;
+	background: var(--col-bg1);
+	border-radius: var(--siz-radius2);
+	border: var(--box-crisp);
+	;
+}
+
+.modal-items p {
+	text-align: left;
+	overflow-wrap: normal;
+	max-height: 40%;
+	overflow: hidden auto;
+	padding-right: 10px;
+}
+
+.modal-items select {
+	background: var(--col-bgh);
+	color: var(--col-txth);
+	border-radius: var(--siz-radius2);
+	padding: 0.5rem;
+	outline: none;
+	display: block;
+	width: 100%;
+	border: var(--box-crisp);
+	;
+}
+
+.modal-items button {
+	padding: 8px 18px;
+	background: var(--col-bg3);
+	color: inherit;
+	flex-grow: 1;
+	cursor: pointer;
+	border-radius: var(--siz-radius2);
+	width: 100%;
+	border: var(--box-crisp);
+	;
+}
+
+.modal-items button:focus {
+	background: var(--col-bgh);
+	color: var(--col-txth);
+}
+
+.modal-items .notbn {
+	background: transparent;
+}
+
+.modal-items a {
+	color: #71bbff;
+
+	&[type="btn"] {
+		padding: .5em;
+		background-color: #ffffff1c;
+		border: var(--box-crisp);
+		border-radius: var(--siz-radius2);
+		display: flex;
+		color: var(--col-txt1);
+		margin-top: .5em;
+		cursor: pointer;
+		justify-content: space-between;
+
+		&>.material-symbols-rounded {
+			opacity: .5;
+			font-size: 20px;
+		}
+	}
 }

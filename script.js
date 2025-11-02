@@ -52,6 +52,10 @@ function notify(text, duration = 5000) {
 	}
 }
 
+function toast(text, duration = 5000) {
+    notify(text, duration)
+}
+
 function displayToast(text, duration) {
 	var titleb = document.getElementById('toastdivtext');
 	if (titleb) {
@@ -88,4 +92,129 @@ function displayToast(text, duration) {
 	} else {
 		console.error("DOM elements not found.");
 	}
+}
+
+function makedialogclosable(ok) {
+	const myDialog = gid(ok);
+
+	if (!myDialog.__originalClose) {
+		myDialog.__originalClose = myDialog.close;
+		myDialog.close = function () {
+			console.log(342, ok)
+			this.classList.add("closeEffect");
+
+			function handler() {
+				myDialog.__originalClose();
+				myDialog.classList.remove("closeEffect");
+			};
+			setTimeout(handler, 200);
+		};
+	}
+
+	document.addEventListener('click', (event) => {
+		if (event.target === myDialog) {
+			myDialog.close();
+		}
+	});
+}
+function openModal(type, { title = '', message, options = null, status = null, preset = '' } = {}) {
+	return new Promise((resolve) => {
+		const modal = document.createElement('dialog');
+		modal.classList.add('modal');
+
+		const modalItemsCont = document.createElement('div');
+		modalItemsCont.classList.add('modal-items');
+
+		const icon = document.createElement('span');
+		icon.classList.add('material-symbols-rounded');
+		let ic = "warning";
+		if (status === "success") ic = "check_circle";
+		else if (status === "failed") ic = "dangerous";
+		icon.textContent = ic;
+		icon.classList.add('modal-icon');
+		modalItemsCont.appendChild(icon);
+
+		if (title && title.length > 0) {
+
+			const h1 = document.createElement('h1');
+			h1.textContent = title;
+			modalItemsCont.appendChild(h1);
+		}
+
+		const p = document.createElement('p');
+		if (type === 'say' || type === 'confirm') {
+			p.innerHTML = `${message}`;
+		} else {
+			p.textContent = message;
+		}
+		modalItemsCont.appendChild(p);
+
+		let dropdown = null;
+		if (type === 'dropdown') {
+			dropdown = document.createElement('select');
+			let items = Array.isArray(options) ? options : Object.values(options);
+			for (const option of items) {
+				const opt = document.createElement('option');
+				opt.value = option;
+				opt.textContent = option;
+				dropdown.appendChild(opt);
+			}
+			modalItemsCont.appendChild(dropdown);
+		}
+
+		let inputField = null;
+		if (type === 'ask') {
+			inputField = document.createElement('input');
+			inputField.type = 'text';
+			inputField.value = preset;
+			modalItemsCont.appendChild(inputField);
+		}
+
+		const btnContainer = document.createElement('div');
+		btnContainer.classList.add('button-container');
+		modalItemsCont.appendChild(btnContainer);
+
+		const yesButton = document.createElement('button');
+		yesButton.textContent = type === 'confirm' ? 'Yes' : 'OK';
+		btnContainer.appendChild(yesButton);
+
+		if (type === 'confirm' || type === 'dropdown') {
+			const noButton = document.createElement('button');
+			noButton.textContent = type === 'confirm' ? 'No' : 'Cancel';
+			btnContainer.appendChild(noButton);
+			noButton.onclick = () => {
+				modal.close();
+				modal.remove();
+				resolve(false);
+			};
+		}
+
+		yesButton.onclick = () => {
+			modal.close();
+			modal.remove();
+			if (type === 'dropdown') {
+				resolve(dropdown.value);
+			} else if (type === 'ask') {
+				resolve(inputField.value);
+			} else {
+				resolve(true);
+			}
+		};
+			document.body.appendChild(modal);
+			modal.appendChild(modalItemsCont);
+			modal.showModal();
+	});
+}
+
+function justConfirm(title, message) {
+	return openModal('confirm', { title, message });
+}
+function showDropdownModal(title, message, options) {
+	return openModal('dropdown', { title, message, options });
+}
+function say(message, status = null) {
+	return openModal('say', { message, status });
+}
+function ask(question, preset = '') {
+	return openModal('ask', { message: question, preset });
 }
