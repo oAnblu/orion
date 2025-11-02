@@ -335,7 +335,7 @@ async function newpost() {
     let content = document.getElementById("postinput").value;
     
     if (msgLenLim == 460) {
-        attachments = "&attachment=" + encodeURIComponent("http://runnova.github.io/g.png?e=" + content);
+        attachments = "&attachment=" + encodeURIComponent("http://runnova.github.io/orion/g.png?e=" + content);
         content = '*';
     }
     await fetch(`https://claw.rotur.dev/post?content=${content}&os=NovaOS&auth=${window.parent.roturExtension.userToken}${attachments}`);
