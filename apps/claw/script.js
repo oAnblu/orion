@@ -340,7 +340,7 @@ async function newpost() {
     if (!checkifaccs()) { return }
     let content = document.getElementById("postinput").value;
 
-    if (msgLenLim == 460) {
+    if (msgLenLim == 450) {
         attachments = "&attachment=" + "https://postimg.cc/3dPn6tGN/b62c7700/g.png/" + encodeURIComponent(content);
         content = '*';
     }
@@ -701,15 +701,15 @@ async function moreinfo() {
 
 async function toggleOrionEnc() {
 
-    if (msgLenLim == 460) {
+    if (msgLenLim == 450) {
         await window.parent.say("Turned off Orion Encoding", "success");
         msgLenLim = 100;
         updmsglentxt();
         return;
     }
-    if (await window.parent.justConfirm("Turn on Orion Encoding?", "This increases the message limit to 460 charecters, BUT will appear as an error on other clients.")) {
-        await window.parent.say("<h1>You now have Orion Encoding.</h1> Users on other clients will not be able to see your messages. But users on this client sees it with a max length of 460. We know Orion Encoding is unhealthy. But if we didn't, someone bad will create this.", "success");
-        msgLenLim = 460;
+    if (await window.parent.justConfirm("Turn on Orion Encoding?", "This increases the message limit to 450 charecters, BUT will appear as an error on other clients.")) {
+        await window.parent.say("<h1>You now have Orion Encoding.</h1> Users on other clients will not be able to see your messages. But users on this client sees it with a max length of 450. We know Orion Encoding is unhealthy. But if we didn't, someone bad will create this.", "success");
+        msgLenLim = 450;
         updmsglentxt();
     }
 }
