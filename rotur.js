@@ -1708,6 +1708,12 @@ function roturTWEventCall(data) {
             } else {
                 roturExtension.login_prompt({ STYLE_URL: "https://runnova.github.io/NovaOS/libs/roturstyle.css" });
             }
+
+
+            const params = new URLSearchParams(location.search)
+            const s = params.get('s')
+            if (s) openApp(s)
+
         })();
     }
 }

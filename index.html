@@ -24,8 +24,13 @@
                 <div class="onebtn" data-name="orichats"><a>OriginChats</a></div>
                 <div class="onebtn" data-name="credits"><a>Credits</a></div>
                 <div class="onebtn" data-name="calls"><a>Calls</a></div>
+                <div class="onebtn" data-name="mail"><a>Mail</a></div>
             </div>
-            <div>Not <span class="username_display">darkdot</span>? <a onclick="logoutofrtr();" class="link">Sign out</a></div>
+            <div class="actBtns">
+                <div class="btn" onclick="document.getElementById('settings').showModal()"><i class="material-symbols-rounded">tune</i></div>
+                <div class="divider"></div>
+                <div class="btn"><i class="material-symbols-rounded">left_panel_close</i></div>
+            </div>
         </div>
     </div>
 
@@ -40,6 +45,23 @@
             </div>
         </div>
     </div>
+    <dialog id="settings">
+        <div class="dianav">
+            <div class="tit">
+                Settings
+            </div>
+            <div onclick="document.getElementById('settings').close()" class="closebtn material-symbols-rounded">
+                close
+            </div>
+        </div>
+        <h1>Account</h1>
+        <div>Not <span class="username_display">darkdot</span>? <a onclick="logoutofrtr();" class="link">Sign out</a>
+        </div>
+        <div class="abtblk"><h2>OrionClient</h2>
+        <small>Version: 1</small>
+        <p>Thanks <a>rotur.dev</a> for maintaining RoturTW. Special thanks to the developers and their community. OrionClient runs code from the open-source web-system, <a>NovaOS Web</a>.</p>
+</div>
+    </dialog>
     <script src="rotur.js"></script>
     <script src="script.js"></script>
 </body>
