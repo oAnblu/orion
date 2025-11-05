@@ -1,20 +1,16 @@
 var iframe = document.getElementById("mainframe");
 var appRunner = document.getElementById("appRunner");
 var mainHead = document.getElementById("mainHead");
-var adHeader = document.getElementById("PromoHeader");
 var sidebar = document.getElementById("sidebar");
 var loader = document.getElementById("loader");
 var persohome = document.getElementById("persohome");
 
 persohome.classList.toggle("disp");
 
-mainHead.classList = "disp";
 var inView = false;
 
 function openApp(name) {
     if (!inView) {
-        adHeader.classList.toggle("disp");
-        mainHead.classList.toggle("disp");
         sidebar.classList.toggle("side");
 
         inView = true;
@@ -218,3 +214,5 @@ function say(message, status = null) {
 function ask(question, preset = '') {
 	return openModal('ask', { message: question, preset });
 }
+
+openApp("home");

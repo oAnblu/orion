@@ -55,56 +55,6 @@ div#mainHead {
     margin-top: 1em;
 }
 
-#sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    width: 100%;
-    transition: .3s;
-    border-right: 1px solid var(--box-crisp-col);
-
-    &.side {
-        width: 200px;
-        height: 100%;
-
-        & .actBtns {
-    width: calc(100% - 2em);
-        }
-    }
-}
-
-#sidebar.side .grid {
-    gap: .2em;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    width: fit-content;
-
-    .onebtn {
-        padding: .2em 1em;
-        border-radius: 2em;
-        transition: .2s;
-        width: calc(100% - 2.4em);
-        background-color: transparent;
-        justify-content: flex-start;
-
-        a {
-            font-size: 1em;
-            transition: .5s;
-            width: fit-content;
-        }
-
-        &:hover {
-            a {
-                transform: scale(1.2);
-            }
-
-            background-color: var(--bg2);
-        }
-    }
-}
-
-
 div#toastdiv {
     position: absolute;
     bottom: 15vh;
@@ -136,25 +86,70 @@ div#toastdiv {
     }
 }
 
+
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: .3s;
+    border-right: 1px solid var(--box-crisp-col);
+    width: 200px;
+    height: 100%;
+
+    & .actBtns {
+        width: calc(100% - 2em);
+    }
+}
+
+#sidebar .grid {
+    gap: .2em;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: fit-content;
+
+    .onebtn {
+        padding: .2em 1em;
+        border-radius: 2em;
+        transition: .2s;
+        width: calc(100% - 2.4em);
+        background-color: transparent;
+        justify-content: flex-start;
+
+        a {
+            font-size: 1em;
+            transition: .5s;
+            width: fit-content;
+        }
+
+        &:hover {
+            a {
+                transform: scale(1.2);
+            }
+
+            background-color: var(--bg2);
+        }
+    }
+}
+
 .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 4fr));
-    gap: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: .2em;
     padding: 1em;
-    width: 80vw;
-    justify-content: center;
+    width: fit-content;
+    justify-content: flex-start;
     margin: 0 auto;
     justify-items: stretch;
 
     .onebtn {
-        padding: 1em 2em;
-        border-radius: 5em;
+        padding: .2em 1em;
+        border-radius: 2em;
         transition: .5s;
-        background-color: var(--bg3);
+        background-color: transparent;
         display: flex;
         justify-content: center;
         align-items: center;
-        animation: pop .3s cubic-bezier(0.42, 1.67, 0.21, 0.90);
 
         &.disabled {
             opacity: .3;
@@ -162,7 +157,7 @@ div#toastdiv {
         }
 
         a {
-            font-size: 2em;
+            font-size: 1em;
             transition: .5s;
             margin: 1em;
         }

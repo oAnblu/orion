@@ -12,16 +12,10 @@
 <body>
     <div id="sidebar">
         <div id="mainHead">OrionClient</div>
-        <div id="PromoHeader" class="header">
-            <span><b>OrionClient</b> is the</span>
-            <h1>Integrated ecosystem</h1>
-            <span>For <a href="https://rotur.dev" class="link">RoturTW</a></span>
-            <br>
-            <small>This view is gonna be removed soon - in favor of a better one 🫶</small>
-        </div>
         <div id="loader"></div>
         <div id="persohome">
             <div class="grid">
+                <div class="onebtn" data-name="home"><a>Home</a></div>
                 <div class="onebtn" data-name="claw"><a>Claw</a></div>
                 <div class="onebtn" data-name="orichats"><a>OriginChats</a></div>
                 <div class="onebtn" data-name="credits"><a>Credits</a></div>
@@ -29,7 +23,8 @@
                 <div class="onebtn" data-name="mail"><a>Mail</a></div>
             </div>
             <div class="actBtns">
-                <div class="btn" onclick="document.getElementById('settings').showModal()"><i class="material-symbols-rounded">tune</i></div>
+                <div class="btn" onclick="document.getElementById('settings').showModal()"><i
+                        class="material-symbols-rounded">tune</i></div>
                 <div class="divider"></div>
                 <div class="btn"><i class="material-symbols-rounded">left_panel_close</i></div>
             </div>
@@ -59,10 +54,22 @@
         <h1>Account</h1>
         <div>Not <span class="username_display">darkdot</span>? <a onclick="logoutofrtr();" class="link">Sign out</a>
         </div>
-        <div class="abtblk"><h2>OrionClient</h2>
-        <small>Version: 1</small>
-        <p>Thanks <a>rotur.dev</a> for maintaining RoturTW. Special thanks to the developers and their community. OrionClient runs code from the open-source web-system, <a>NovaOS Web</a>.</p>
-</div>
+        <h1>Theme</h1>
+        <p>Use a color theme to change the look of OrionClient</p>
+        <div><select id="themesel">
+            <option>Default</option>
+            <option>Light</option>
+            <option>Heaven</option>
+            <option>Communism</option>
+            <option>Banks use this</option>
+            <option>Hacker</option>
+        </select>
+            <button>Apply</button>
+        </div>
+        <div class="abtblk">
+            <h2>OrionClient</h2>
+            <p>Thanks <a>rotur.dev</a> for maintaining RoturTW. Special thanks to the developers and their community. OrionClient runs code from the open-source web-system, <a>NovaOS Web</a>.</p>
+        </div>
     </dialog>
     <script src="rotur.js"></script>
     <script src="script.js"></script>

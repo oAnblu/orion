@@ -1,0 +1,24 @@
+body {
+    padding: 1em;
+}
+
+.article {
+    width: 100%;
+    max-width: 800px;
+    background-color: var(--col-bg2);
+    border-radius: 1em;
+    border: var(--box-crisp);
+    box-shadow: 0 0 10px #000000ab;
+    padding: 2em;
+    margin: 2em auto;
+    &>.heading {
+        padding-bottom: .5em;
+        border-bottom: 1px solid var(--box-crisp-col);
+    }
+
+    & .sec {
+        background-color: var(--col-bg1);
+        padding: 1em;
+        border-radius: .5em;
+    }
+}
