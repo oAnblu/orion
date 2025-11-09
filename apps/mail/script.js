@@ -6,7 +6,9 @@ async function listMails() {
     const list = document.querySelector('#mailList');
     list.innerHTML = '';
     const now = Date.now();
+    let currentMail = 0;
     for (const m of mails) {
+        currentMail += 1;
         const diff = now - m.timestamp;
         const mins = Math.floor(diff / 60000);
         const hours = Math.floor(mins / 60);
@@ -49,7 +51,51 @@ async function listMails() {
         const div = document.createElement('div');
         div.classList.add("singMail");
         div.appendChild(mailUserData);
+        div.setAttribute("mail-id", currentMail);
         div.innerHTML += `<div class="title">${m.title}</div>`;
+        div.onclick = async () => {
+            const mailDataRaw = await window.parent.roturExtension.getMail({ ID: Number(div.getAttribute("mail-id")) }) || '{}';
+            const mailData = JSON.parse(mailDataRaw);
+            document.getElementById("mailTitle").innerText = mailData.info?.title || '';
+            document.getElementById("mailBody").innerText = mailData.body || '';
+
+
+            const mailUserData = document.getElementById("readMailDynamics");
+            mailUserData.innerHTML = '';
+            mailUserData.classList.add("mailuserdata");
+            mailUserData.onclick = () => {
+                viewprofile(m.from);
+            };
+
+            const mailUserAvatar = document.createElement("div");
+            mailUserAvatar.classList.add("mailuseravatar");
+
+            const userAvatarImg = document.createElement("img");
+            userAvatarImg.classList.add("mailuseravatarsrc");
+            userAvatarImg.src = "https://avatars.rotur.dev/" + m.from;
+            pfplib[m.from] = userAvatarImg.src;
+
+            mailUserAvatar.appendChild(userAvatarImg);
+
+            const mailUserDynamics = document.createElement("div");
+            mailUserDynamics.classList.add("mailuserdynamics");
+
+            const mailUsername = document.createElement("div");
+            mailUsername.classList.add("mailusername");
+            mailUsername.textContent = m.from;
+
+            const mailTimestamp = document.createElement("div");
+            mailTimestamp.classList.add("mailtimestamp");
+            mailTimestamp.textContent = rel;
+
+            mailUserDynamics.appendChild(mailUsername);
+            mailUserDynamics.appendChild(mailTimestamp);
+
+
+            mailUserData.appendChild(mailUserAvatar);
+            mailUserData.appendChild(mailUserDynamics);
+
+        }
         list.appendChild(div);
 
         const divider = document.createElement("div");

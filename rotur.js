@@ -1071,6 +1071,7 @@ class RoturExtension {
     getMail(args) {
         if (!this.is_connected) return "Not Connected";
         if (!this.authenticated) return "Not Logged In";
+        console.log(args)
 
         return this.handlePromise({
             cmd: "pmsg",
@@ -1089,6 +1090,7 @@ class RoturExtension {
             }
         });
     }
+    
 
     deleteMail(args) {
         if (!this.is_connected) return "Not Connected";
@@ -1715,6 +1717,8 @@ function roturTWEventCall(data) {
             if (s) openApp(s)
 
         })();
+    } else if (data == "roturEXT_whenDisconnected") {
+        attemptConnection();
     }
 }
 
