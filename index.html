@@ -7,7 +7,7 @@
     <title>OrionClient</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="nova.css">
-	<link rel="icon" type="image/webp" href="oclogo.png">
+    <link rel="icon" type="image/webp" href="oclogo.png">
 </head>
 
 <body>
@@ -16,12 +16,15 @@
         <div id="loader"></div>
         <div id="persohome">
             <div class="grid">
-                <div class="onebtn" data-name="home"><a>Home</a></div>
-                <div class="onebtn" data-name="claw"><a>Claw</a></div>
-                <div class="onebtn" data-name="orichats"><a>OriginChats</a></div>
-                <div class="onebtn" data-name="credits"><a>Credits</a></div>
-                <div class="onebtn" data-name="calls"><a>Calls</a></div>
-                <div class="onebtn" data-name="mail"><a>Mail</a></div>
+                <div class="onebtn" data-name="home"><i class="material-symbols-rounded">home</i> <a>Home</a></div>
+                <div class="onebtn" data-name="claw"><i class="material-symbols-rounded">crowdsource</i><a>Claw</a>
+                </div>
+                <div class="onebtn" data-name="orichats"><i class="material-symbols-rounded">tag</i><a>OriginChats</a>
+                </div>
+                <div class="onebtn" data-name="credits"><i
+                        class="material-symbols-rounded">attach_money</i><a>Credits</a></div>
+                <div class="onebtn" data-name="calls"><i class="material-symbols-rounded">call</i><a>Calls</a></div>
+                <div class="onebtn" data-name="mail"><i class="material-symbols-rounded">mail</i><a>Mail</a></div>
             </div>
             <div class="actBtns">
                 <div class="btn" onclick="document.getElementById('settings').showModal()"><i
@@ -33,6 +36,7 @@
     </div>
 
     <div id="appRunner">
+        <img src="oclogo.png" class="oriloaderstatic">
         <iframe id="mainframe" src=""></iframe>
     </div>
     <div id="toastdiv">
@@ -58,14 +62,14 @@
         <h1>Theme</h1>
         <p>Use a color theme to change the look of OrionClient</p>
         <div><select id="themesel">
-            <option>Default</option>
-            <option>Light</option>
-            <option>Heaven</option>
-            <option>Communism</option>
-            <option>Banks use this</option>
-            <option>Hacker</option>
-        </select>
-            <button>Apply</button>
+                <option>Default</option>
+                <option>Light</option>
+                <option>Heaven</option>
+                <option>Communism</option>
+                <option>Banks use this</option>
+                <option>Hacker</option>
+                <option>Night Shift</option>
+            </select>
         </div>
         <div class="abtblk">
             <h2>OrionClient</h2>

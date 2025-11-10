@@ -26,8 +26,8 @@
 	--col-txt1: #FFFFFF;
 	--col-bg2: #171717;
 	--col-bg3: #262626;
-	--col-bgh: #44403C;
-	--col-txth: #FFFFFF;
+	--col-bgh: #39335b;
+	--col-txth: #aa9bff;
 
 	--col-good: #5be45b;
 	--col-bad: #d44343;
@@ -45,8 +45,8 @@
 	--spacing-gap: 6px;
 
 	/* easing */
-	--time1: .3s cubic-bezier(0.36, 0.38, 0, 0.94);
-	--time2: .3s cubic-bezier(0.42, 1.67, 0.21, 0.90);
+	--time1: cubic-bezier(0.36, 0.38, 0, 0.94);
+	--time2: cubic-bezier(0.42, 1.67, 0.21, 0.90);
 
 	/* decor */
 	--box-crisp: 1px solid #ffffff0c;

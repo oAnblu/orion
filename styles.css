@@ -1,14 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;800&display=swap');
 
-:root {
-    --bg1: #101010;
-    --bg2: #171717;
-    --bg3: #262626;
-    --bg4: #44403C;
-    --tx1: #ccc9dcff;
-    --tx2: rgb(156, 139, 255);
-}
-
 html {
     height: 100%;
     width: 100%;
@@ -18,8 +9,8 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    color: var(--tx1);
-    background-color: var(--bg1);
+    color: var(--col-txt1);
+    background-color: var(--col-bg1);
     height: 100%;
     width: 100%;
     display: flex;
@@ -30,7 +21,7 @@ body {
 
 a.link {
     font-weight: bold;
-    color: var(--tx2);
+    color: var(--col-txth);
     cursor: pointer;
 }
 
@@ -72,7 +63,7 @@ div#toastdiv {
     height: 100%;
     width: fit-content;
     padding: 0.5rem 1rem;
-    background: var(--bg2);
+    background: var(--col-bg2);
     border-radius: 1.5rem;
     box-shadow: 0 8px 1rem #00000085;
     margin: auto;
@@ -127,7 +118,7 @@ div#toastdiv {
                 transform: scale(1.2);
             }
 
-            background-color: var(--bg2);
+            background-color: var(--col-bg2);
         }
     }
 }
@@ -171,7 +162,7 @@ div#toastdiv {
         }
 
         &.active {
-            background-color: var(--bg2) !important;
+            background-color: var(--col-bg2) !important;
         }
     }
 }
@@ -180,18 +171,37 @@ div#toastdiv {
     display: none !important;
 }
 
+@keyframes blink {
+    50% {
+        opacity: 50%;
+    }
+}
+
 #appRunner {
     flex: 1;
     height: 100%;
     overflow: hidden;
     transition: .3s;
+    position: relative;
+
+    &>img.oriloaderstatic {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-25px, -25px);
+        height: 50px;
+        width: 50px;
+        z-index: -1;
+        animation: blink 1s infinite;
+    }
 
     &>#mainframe {
         width: 100%;
         height: 100%;
         border: 0;
-        background-color: var(--bg1);
+        background-color: var(--col-bg1);
         color: white;
+        transition: opacity .3s;
     }
 }
 
@@ -442,15 +452,13 @@ div#toastdiv {
 }
 
 dialog#settings {
-    aspect-ratio: 9 / 6;
-    width: 80%;
+    aspect-ratio: 4/3;
     max-height: 80%;
     border-radius: 1em;
     border: 0;
-    background-color: var(--bg2);
+    background-color: var(--col-bg2);
     border: var(--box-crisp);
     box-shadow: 0 5px 1em #000000ab;
-    color: white;
     outline: none;
     padding: 1.5em;
 
@@ -467,7 +475,7 @@ dialog#settings {
             padding: .5em;
             display: flex;
             font-size: 20px;
-            background-color: var(--bg3);
+            background-color: var(--col-bg3);
             border-radius: 2em;
             cursor: pointer;
         }
@@ -475,8 +483,57 @@ dialog#settings {
 }
 
 .abtblk {
-    background-color: var(--bg1);
+    background-color: var(--col-bg1);
     border-radius: var(--siz-radius1);
     padding: 1em;
     margin-top: 1em;
+}
+
+#themesel {
+    background: var(--col-bg3);
+    color: var(--col-txt1);
+    padding: .5em;
+    border-radius: .5em;
+    border: var(--box-crisp);
+}
+
+button {
+    padding: .5em .7em;
+    border-radius: .5em;
+    border: var(--box-crisp);
+    background: var(--col-bgh);
+    color: var(--col-txt1);
+}
+
+@keyframes DiaPop {
+    0% {
+        transform: translateY(.5em) scale(.9);
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes Diabg {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+dialog {
+    color: var(--col-txt1);
+    animation: DiaPop .3s var(--time1);
+
+    &::backdrop {
+        transition: .5s;
+        animation: Diabg .5s var(--time1);
+        background-color: #000000ab;
+        backdrop-filter: blur(1em);
+    }
 }
