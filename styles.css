@@ -12,11 +12,56 @@ body {
     color: var(--col-txt1);
     background-color: var(--col-bg1);
     height: 100%;
-    width: 100%;
+    width: calc(100% - 6px);
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     flex-direction: row;
+    padding: 3px;
+    gap: 3px;
+
+    &>* {
+        transition: width .3s;
+    }
+
+    &>.divider {
+        background-color: var(--col-bg1);
+        height: 100%;
+        display: flex;
+        align-items: center;
+        width: 5px;
+        justify-content: center;
+        cursor: grab;
+
+        &>i {
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            opacity: 0;
+            transition: .3s;
+        }
+
+        &>.elem {
+            width: 1px;
+            height: 80%;
+            background-color: var(--box-crisp-col);
+            position: absolute;
+        }
+
+        &:hover {
+            width: 15px;
+            background-color: var(--col-bg2);
+            margin: 0 2px;
+
+            &>i,
+            .elem {
+                opacity: 1;
+                background-color: transparent;
+            }
+        }
+    }
 }
 
 a.link {
@@ -134,13 +179,15 @@ div#toastdiv {
     justify-items: stretch;
 
     .onebtn {
-        padding: .2em 1em;
-        border-radius: 2em;
-        transition: .5s;
+        padding: 0em 1em;
+        border-radius: 1em;
+        transition: .2s;
+        width: calc(100% - 2.4em);
         background-color: transparent;
+        justify-content: flex-start;
         display: flex;
-        justify-content: center;
         align-items: center;
+            outline: transparent;
 
         &.disabled {
             opacity: .3;
@@ -159,9 +206,11 @@ div#toastdiv {
             }
 
             background-color: var(--bg4);
+            outline: var(--box-crisp);
         }
 
         &.active {
+            outline: var(--box-crisp);
             background-color: var(--col-bg2) !important;
         }
     }
@@ -177,7 +226,7 @@ div#toastdiv {
     }
 }
 
-#appRunner {
+.appwindow {
     flex: 1;
     height: 100%;
     overflow: hidden;
@@ -194,6 +243,25 @@ div#toastdiv {
         z-index: -1;
         animation: blink 1s infinite;
     }
+}
+
+#sidebarapp {
+    flex: 2;
+    min-width: 300px;
+    border-radius: 1em;
+
+    &>iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background-color: var(--col-bg2)ab;
+        color: white;
+        transition: opacity .3s;
+    }
+}
+
+#appRunner {
+    flex: 4;
 
     &>#mainframe {
         width: 100%;

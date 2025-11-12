@@ -298,3 +298,5 @@ document.getElementById("themesel").addEventListener("change", (ev) => {
 
 setTheme(curtheme);
 document.getElementById("themesel").value = curtheme;
+
+document.getElementById("sidebarapp").style.display = 'none';

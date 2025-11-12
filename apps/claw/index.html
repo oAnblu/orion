@@ -49,39 +49,40 @@
                 </div>
             </nav>
 
+
+            <div class="feed">
             <div id="loadingclaw">
                 <div class="loader"></div>
 
                 <small>Claw is loading...</small>
             </div>
-            
-            <div class="feed">
                 <div class="postmsgsection">
-                <textarea id="postinput" onkeyup="updmsglentxt()" placeholder="What is going on!?"></textarea>
-                <div class="postsubfoot">
-                    <div class="grp"><button onclick="attachthings(this)" id="attachbtn">
-                        <span>Attach</span>
-                        <span class="material-symbols-rounded">
-                            add_circle
-                        </span>
-                    </button> 
-                    <button onclick="toggleOrionEnc()" id="attachbtn">
-                        <span>Orion</span>
-                        <span class="material-symbols-rounded">
-                            mode_off_on
-                        </span>
-                    </button>
-                    <button onclick="newpost()" class="postbtn buttonlike">
-                        <span>Post</span>
-                        <span class="material-symbols-rounded">
-                            send
-                        </span>
-                    </button></div>
-                    <div id="postlen">
-                        0/100
+                    <textarea id="postinput" onkeyup="updmsglentxt()" placeholder="What is going on!?"></textarea>
+                    <div class="postsubfoot">
+                        <div class="grp"><button onclick="attachthings(this)" id="attachbtn">
+                                <span>Attach</span>
+                                <span class="material-symbols-rounded">
+                                    add_circle
+                                </span>
+                            </button>
+                            <button onclick="toggleOrionEnc()" id="attachbtn">
+                                <span>Orion</span>
+                                <span class="material-symbols-rounded">
+                                    mode_off_on
+                                </span>
+                            </button>
+                            <button onclick="newpost()" class="postbtn buttonlike">
+                                <span>Post</span>
+                                <span class="material-symbols-rounded">
+                                    send
+                                </span>
+                            </button>
+                        </div>
+                        <div id="postlen">
+                            0/100
+                        </div>
                     </div>
                 </div>
-            </div>
                 <div id="feed"></div>
             </div>
         </div>
@@ -90,20 +91,20 @@
                 <img src="https://avatars.rotur.dev/o" id="currentaccPfpdisp"> <b id="crtaccountname">Guest</b>
             </div>
             <div class="feedsnav">
-                        <button class="active" id="clawfeedbtn" onclick="loadFeed('claw', this)">
-                            Claw
-                        </button>
-                        <button id="followingfeedbtn" onclick="loadFeed('following',this)">
-                            Following
-                        </button>
-                        <button id="topfeedbtn" onclick="loadFeed('top',this)">
-                            Top
-                        </button>
-                        <button id="otherfeed" style="display: none;" class="buttonlike">
-                            Other
-                        </button>
-                    </div>
-            
+                <button class="active" id="clawfeedbtn" onclick="loadFeed('claw', this)">
+                    Claw
+                </button>
+                <button id="followingfeedbtn" onclick="loadFeed('following',this)">
+                    Following
+                </button>
+                <button id="topfeedbtn" onclick="loadFeed('top',this)">
+                    Top
+                </button>
+                <button id="otherfeed" style="display: none;" class="buttonlike">
+                    Other
+                </button>
+            </div>
+
         </div>
     </main>
 

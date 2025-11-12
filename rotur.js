@@ -1090,7 +1090,7 @@ class RoturExtension {
             }
         });
     }
-    
+
 
     deleteMail(args) {
         if (!this.is_connected) return "Not Connected";
@@ -1680,21 +1680,23 @@ async function logoutofrtr() {
     roturExtension.disconnect();
 }
 
-function roturTWEventCall(data) {
+async function roturTWEventCall(data) {
     if (data == "roturEXT_whenAuthenticated") {
-        fetch("https://social.rotur.dev/claim_daily?auth=" + roturExtension.userToken).then((response) => {
-            persohome.classList.remove("disp");
-            loader.classList.add("disp");
-            [...document.getElementsByClassName("username_display")].forEach(element => {
-                element.innerText = roturExtension.user.username;
-            })
-            if (response.ok) {
-                notify(`Logged in ${roturExtension.user.username}, you got the daily credit!`)
-            } else {
-                notify(`Logged in ${roturExtension.user.username}, welcome back!`)
-                throw new Error('Failed to claim daily reward');
-            }
+        notify(`Logged in ${roturExtension.user.username}, welcome back!`)
+        persohome.classList.remove("disp");
+        loader.classList.add("disp");
+        [...document.getElementsByClassName("username_display")].forEach(element => {
+            element.innerText = roturExtension.user.username;
         })
+        if (localStorage.getItem("orion-daily")) {
+            fetch("https://social.rotur.dev/claim_daily?auth=" + roturExtension.userToken).then((response) => {
+                if (response.ok) {
+                    notify(`You got the daily credit!`)
+                } else {
+                    throw new Error('Failed to claim daily reward');
+                }
+            })
+        }
     } else if (data == "roturEXT_whenConnected") {
         (async () => {
             let localroturdata = localStorage.getItem("orion-rotur");

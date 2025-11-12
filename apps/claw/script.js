@@ -8,21 +8,7 @@ async function attachthings(obj) {
 refresh
 </span>`
 }
-function matchSizeAndPosition() {
-    let loadingClaw = document.getElementById("loadingclaw");
 
-    if (feed && loadingClaw) {
-        let rect = feed.getBoundingClientRect();
-        loadingClaw.style.position = "absolute";
-        loadingClaw.style.top = rect.top + "px";
-        loadingClaw.style.left = rect.left + "px";
-        loadingClaw.style.width = rect.width + "px";
-        loadingClaw.style.height = rect.height + "px";
-    }
-}
-
-window.addEventListener("load", matchSizeAndPosition);
-window.addEventListener("resize", matchSizeAndPosition);
 
 const clawloader = {
     show() {
@@ -65,8 +51,8 @@ async function loadFeed(type = 'claw', obj, useOffset = false, torefresh = false
 
     if (useOffset == false) {
         scrollToTop();
-        clawloader.show();
     }
+        clawloader.show();
     const feedContainer = document.getElementById("feed");
     var response, posts;
     if (type == 'claw') {
@@ -75,23 +61,26 @@ async function loadFeed(type = 'claw', obj, useOffset = false, torefresh = false
         response = await fetch("https://claw.rotur.dev/feed?limit=" + postlimit + offsetParam);
         posts = await response.json();
         if (!useOffset) document.getElementById("feed").innerHTML = "";
-    } else if (type == 'following') {
-        if (!checkifaccs()) return;
-        document.getElementById("followingfeedbtn").classList.add('active');
-        response = await fetch("https://claw.rotur.dev/following_feed?auth=" + window.parent.roturExtension.userToken + "&limit=" + postlimit + offsetParam);
-        posts = await response.json();
-        if (!useOffset) feedContainer.innerHTML = "";
-    } else if (type == 'top') {
-        if (!checkifaccs()) return;
-        document.getElementById("topfeedbtn").classList.add('active');
-        response = await fetch("https://social.rotur.dev/top_posts?time_period=168");
-        posts = await response.json();
-        if (!useOffset) feedContainer.innerHTML = "";
+        document.getElementsByClassName("postmsgsection")[0].classList.add("visible")
     } else {
-        response = await fetch("https://claw.rotur.dev/profile?name=" + selecteduser + offsetParam);
-        posts = (await response.json()).posts;
-        if (!useOffset) {
-            feedContainer.innerHTML = `<div class="profileseperator">
+        document.getElementsByClassName("postmsgsection")[0].classList.remove("visible")
+        if (type == 'following') {
+            if (!checkifaccs()) return;
+            document.getElementById("followingfeedbtn").classList.add('active');
+            response = await fetch("https://claw.rotur.dev/following_feed?auth=" + window.parent.roturExtension.userToken + "&limit=" + postlimit + offsetParam);
+            posts = await response.json();
+            if (!useOffset) feedContainer.innerHTML = "";
+        } else if (type == 'top') {
+            if (!checkifaccs()) return;
+            document.getElementById("topfeedbtn").classList.add('active');
+            response = await fetch("https://social.rotur.dev/top_posts?time_period=168");
+            posts = await response.json();
+            if (!useOffset) feedContainer.innerHTML = "";
+        } else {
+            response = await fetch("https://claw.rotur.dev/profile?name=" + selecteduser + offsetParam);
+            posts = (await response.json()).posts;
+            if (!useOffset) {
+                feedContainer.innerHTML = `<div class="profileseperator">
                 <div class="profilepic"><img src="" id="pfpuserdet"></div>
                 <div class="userdata">
                     <div class="userdatatext"><h2 id="undispusdat">UserName</h2><p id="postsnoteaser">Created 2 months ago</p></div>
@@ -101,7 +90,8 @@ async function loadFeed(type = 'claw', obj, useOffset = false, torefresh = false
                     </div>
                 </div>
             </div>`;
-            listprofilefeatures();
+                listprofilefeatures();
+            }
         }
     }
 
@@ -395,7 +385,8 @@ function createReplyElement(reply) {
 
     const replyUserAvatarImg = document.createElement("img");
     replyUserAvatarImg.classList.add("postuseravatarsrc");
-    replyUserAvatarImg.src = reply.pfp || pfplib[reply.user];
+    console.log("https://avatars.rotur.dev/" + reply.user)
+    replyUserAvatarImg.src = "https://avatars.rotur.dev/" + reply.user;
 
     replyUserAvatar.appendChild(replyUserAvatarImg);
 
@@ -478,27 +469,18 @@ async function reloadCurrentFeed(post) {
     const allPosts = document.querySelectorAll(".randompost .realpost");
 
     allPosts.forEach(postElement => {
-        const postId = postElement.id.replace("postitem", "");
-
-        if (post.replies && post.replies.length > 0) {
-            renderReplies(postElement, post.replies);
+        postElement.onclick = () => {
+            if (post.replies && post.replies.length > 0) {
+                loadreplies(post, postElement);
+            }
         }
+
     });
 
     setTimeout(document.getElementById("postCont" + post.id).click(), 2000)
 }
 
 function renderReplies(postElement, replies) {
-    console.log(postElement, replies)
-    const repliesContainer = postElement.querySelector("#postReplies");
-    if (repliesContainer) {
-        repliesContainer.innerHTML = '';
-    }
-
-    replies.forEach(reply => {
-        const replyElement = createReplyElement(reply);
-        repliesContainer.appendChild(replyElement);
-    });
 }
 
 async function listprofilefeatures(name = selecteduser) {
@@ -593,93 +575,14 @@ function loadreplies(post, postElement) {
     document.getElementById("targetpost").innerHTML = postElement.innerHTML;
 
     const repliesContainer = document.getElementById("postReplies");
-    repliesContainer.innerHTML = '';
+    if (repliesContainer) {
+        repliesContainer.innerHTML = '';
+    }
 
     if (post.replies && post.replies.length > 0) {
+
         post.replies.forEach(reply => {
-            const replyElement = document.createElement("div");
-            replyElement.classList.add("randompost");
-            replyElement.id = "replyitem" + reply.id;
-
-            replyElement.onclick = () => {
-                document.getElementById("moreOnPost").showModal();
-                const replyPreview = document.createElement("div");
-                replyPreview.classList.add("randompost");
-                replyPreview.innerHTML = replyElement.innerHTML;
-                document.getElementById("targetpost").innerHTML = replyPreview.innerHTML;
-            };
-
-            const replyNav = document.createElement("div");
-            replyNav.classList.add("postnav");
-
-            const replyUserData = document.createElement("div");
-            replyUserData.classList.add("postuserdata");
-            replyUserData.onclick = () => {
-                viewprofile(reply.user);
-            };
-
-            const replyUserAvatar = document.createElement("div");
-            replyUserAvatar.classList.add("postuseravatar");
-
-            const replyUserAvatarImg = document.createElement("img");
-            replyUserAvatarImg.classList.add("postuseravatarsrc");
-            replyUserAvatarImg.src = reply.pfp || pfplib[reply.user];
-
-            replyUserAvatar.appendChild(replyUserAvatarImg);
-
-            const replyUserDynamics = document.createElement("div");
-            replyUserDynamics.classList.add("postuserdynamics");
-
-            const replyUsername = document.createElement("div");
-            replyUsername.classList.add("postusername");
-            replyUsername.textContent = reply.user;
-
-            const replyTimestamp = document.createElement("div");
-            replyTimestamp.classList.add("posttimestamp");
-            replyTimestamp.textContent = timeSince(reply.timestamp);
-
-            replyUserDynamics.appendChild(replyUsername);
-            replyUserDynamics.appendChild(replyTimestamp);
-
-            replyUserData.appendChild(replyUserAvatar);
-            replyUserData.appendChild(replyUserDynamics);
-
-            replyNav.appendChild(replyUserData);
-            replyElement.appendChild(replyNav);
-
-            const replyContent = document.createElement("div");
-            replyContent.classList.add("postcontent");
-            replyContent.textContent = reply.content;
-
-            replyElement.appendChild(replyContent);
-
-            const replyFooter = document.createElement("div");
-            replyFooter.classList.add("postfooter");
-
-            const likestatuses = document.createElement("div");
-            likestatuses.classList.add("likestatuses");
-
-            const likesDiv = document.createElement("div");
-            likesDiv.classList.add("likes");
-            likesDiv.onclick = function () {
-                likepost(reply.id);
-            };
-
-            const heartIcon = document.createElement("ion-icon");
-            heartIcon.setAttribute("name", "heart-outline");
-
-            const likesNumber = document.createElement("span");
-            likesNumber.classList.add("likesnumber");
-            likesNumber.textContent = reply.likes ? reply.likes.length : 0;
-
-            likesDiv.appendChild(heartIcon);
-            likesDiv.appendChild(likesNumber);
-
-            likestatuses.appendChild(likesDiv);
-
-            replyFooter.appendChild(likestatuses);
-            replyElement.appendChild(replyFooter);
-
+            const replyElement = createReplyElement(reply);
             repliesContainer.appendChild(replyElement);
         });
     };
