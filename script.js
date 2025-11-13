@@ -76,7 +76,7 @@ function openApp(name) {
 	}, 300);
 }
 
-iframe.onload = ()=> {
+iframe.onload = () => {
 	setTheme(curtheme, iframe.contentDocument.documentElement);
 	setTimeout(() => {
 		iframe.style.opacity = 1;
@@ -300,3 +300,23 @@ setTheme(curtheme);
 document.getElementById("themesel").value = curtheme;
 
 document.getElementById("sidebarapp").style.display = 'none';
+
+document.querySelectorAll(".checkbox").forEach(item => {
+	var dataSetting = item.getAttribute("data-setting");
+	if (localStorage.getItem("orion_" + dataSetting) != false) {
+		item.classList.add("enabled")
+	} else {
+		item.classList.remove("enabled")
+	}
+	item.onclick = () => {
+		if (dataSetting) {
+			if (item.classList.contains("enabled")) {
+				localStorage.setItem("orion_" + dataSetting, false)
+				item.classList.remove("enabled")
+			} else {
+				localStorage.setItem("orion_" + dataSetting, true)
+				item.classList.add("enabled")
+			}
+		}
+	}
+})

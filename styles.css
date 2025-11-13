@@ -187,7 +187,7 @@ div#toastdiv {
         justify-content: flex-start;
         display: flex;
         align-items: center;
-            outline: transparent;
+        outline: transparent;
 
         &.disabled {
             opacity: .3;
@@ -604,4 +604,52 @@ dialog {
         background-color: #000000ab;
         backdrop-filter: blur(1em);
     }
+}
+
+@keyframes push {
+    50% {
+        transform: translateX(.2em);
+        width: 3.2em;
+    }
+}
+
+.checkbox {
+    width: 3em;
+    height: 1.5em;
+    background: #6b6b6b;
+    border-radius: 1em;
+    display: flex;
+    align-items: center;
+    padding: 3px 5px;
+    transition: .4s;
+    position: relative;
+
+    &.enabled {
+        background: #37682b;
+        animation: push .3s;
+
+        &>i.ball {
+            left: 2em;
+        }
+    }
+
+    &>i.ball {
+        width: 20px;
+        display: block;
+        height: 20px;
+        background: rgb(255, 255, 255);
+        border-radius: 2em;
+        transition: left .5s cubic-bezier(0.42, 1.67, 0.21, 0.90);
+        left: .3em;
+        position: absolute;
+    }
+}
+
+.sing_setting {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+    background: var(--col-bg3);
+    border-radius: .5em;
 }
