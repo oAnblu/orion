@@ -1,0 +1,19 @@
+{
+    "manifest_version": 3,
+    "name": "OrionClient",
+    "short_name": "Orion",
+    "description": "A very clean Nova.CSS flavored client for rotur's originchats.",
+    "theme_color": "#1f1f1f",
+    "background_color": "#000",
+    "display": "standalone",
+    "display_override": ["fullscreen", "standalone", "minimal-ui", "browser"],
+    "scope": "https://runnova.github.io/orion/",
+    "start_url": "https://runnova.github.io/orion/",
+    "icons": [
+        {
+            "src": "n.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
