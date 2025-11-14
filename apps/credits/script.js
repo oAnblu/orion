@@ -17,63 +17,111 @@ function recalculatepaycheck() {
     element.innerText = parseFloat(payment_screen_amt.value) + 1;
 }
 (async () => {
-    const rawData = await window.parent.roturExtension.getTransactions();
-    const currentBalance = await window.parent.roturExtension.getBalance();
+  const rawData = await window.parent.roturExtension.getTransactions();
+const currentBalance = await window.parent.roturExtension.getBalance();
 
-    const rootStyles = getComputedStyle(document.documentElement);
+document.getElementById("accbaldisp").innerText = currentBalance;
 
-    const borderColor = rootStyles.getPropertyValue('--col-bgh').trim();
-    const backgroundColor = rootStyles.getPropertyValue('--col-bg3').trim();
+const transactions = JSON.parse(rawData);
+let totalGain = 0;
+let totalLoss = 0;
 
+// Sort oldest first to calculate balances
+transactions.sort((a, b) => {
+    const ta = a.time ? new Date(a.time) : 0;
+    const tb = b.time ? new Date(b.time) : 0;
+    return ta - tb;
+});
 
-    document.getElementById("accbaldisp").innerText = currentBalance;
-    const transactions = JSON.parse(rawData);
-    let balance = currentBalance;
-    let totalGain = 0;
-    let totalLoss = 0;
-    const dataPoints = [{ balance, transaction: 'Current Balance' }];
+const dataPoints = [];
+let runningBalance = currentBalance;
 
-    transactions.forEach(transaction => {
-        console.log(JSON.stringify(transaction));
-        if (typeof transaction === 'string') {
-            const match = transaction.match(/([-+]?\d*\.?\d+)/);
-            if (match) {
-                const amount = parseFloat(match[0]);
-                balance -= amount;
+// Compute balances backward from currentBalance
+for (let i = transactions.length - 1; i >= 0; i--) {
+    const t = transactions[i];
+    let time = '';
+    let user = '';
+    let amount = 0;
+    let note = '';
 
-                if (amount > 0) {
-                    totalGain += amount;
-                } else if (amount < 0) {
-                    totalLoss += Math.abs(amount);
-                }
-
-                dataPoints.unshift({ balance, transaction });
-            }
-        } else if (typeof transaction === 'object' && transaction !== null) {
-            const amount = transaction.amount || 0;
-            const type = transaction.type;
-            const signedAmount = type === 'out' ? -amount : amount;
-            balance -= signedAmount;
-
-            if (type === 'in') {
-                totalGain += amount;
-            } else if (type === 'out') {
-                totalLoss += amount;
-            }
-
-            const user = transaction.user || 'unknown';
-            const note = transaction.note ? ` (${transaction.note})` : '';
-            const direction = type === 'out' ? 'to' : 'from';
-            const readable = `${type === 'out' ? '-' : '+'}${amount} ${direction} ${user}${note}`;
-
-            dataPoints.unshift({ balance, transaction: readable });
+    if (typeof t === 'string') {
+        const m = t.match(/([-+]?\d*\.?\d+)/);
+        if (m) {
+            amount = parseFloat(m[0]);
+            note = t.replace(m[0], '').trim();
+            if (amount > 0) totalGain += amount;
+            else totalLoss += Math.abs(amount);
+            runningBalance -= amount;
+            dataPoints.unshift({ time: '', user: 'unknown', amount, note, balance: runningBalance });
         }
-    });
-
-    while (dataPoints.length < 6) {
-        const earliest = dataPoints[0];
-        dataPoints.unshift({ balance: earliest ? earliest.balance : 0, transaction: 'No Data' });
+    } else if (typeof t === 'object' && t) {
+        amount = t.amount || 0;
+        const type = t.type;
+        const signed = type === 'out' ? -amount : amount;
+        time = t.time ? new Date(t.time).toLocaleString() : '';
+        user = t.user || 'unknown';
+        note = t.note || '';
+        if (type === 'in') totalGain += amount;
+        else if (type === 'out') totalLoss += amount;
+        runningBalance -= signed;
+        dataPoints.unshift({ time, user, amount: signed, note, balance: runningBalance });
     }
+}
+
+// Table: newest first
+const table = document.createElement('table');
+const header = document.createElement('tr');
+['Time', 'User', 'Amount', 'Reason', 'Balance'].forEach(h => {
+    const th = document.createElement('th');
+    th.textContent = h;
+    header.appendChild(th);
+});
+table.appendChild(header);
+
+[...dataPoints].sort((a, b) => {
+    const ta = a.time ? new Date(a.time) : 0;
+    const tb = b.time ? new Date(b.time) : 0;
+    return tb - ta;
+}).forEach(r => {
+    const tr = document.createElement('tr');
+    [r.time, r.user, r.amount, r.note, r.balance].forEach(v => {
+        const td = document.createElement('td');
+        td.textContent = v;
+        tr.appendChild(td);
+    });
+    table.appendChild(tr);
+});
+
+const container = document.querySelector('#transactionList');
+container.innerHTML = '';
+container.appendChild(table);
+
+// Graph: oldest → newest left → right
+const ctx = document.getElementById('transactionChart').getContext('2d');
+const graphLabels = dataPoints.map(d => `${d.user}: ${d.amount}`);
+const graphData = dataPoints.map(d => d.balance);
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: graphLabels,
+        datasets: [{
+            label: 'Balance Over Time',
+            data: graphData,
+            borderColor: "white",
+            backgroundColor: window.parent.accent,
+            tension: 0.2,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            x: { title: { display: true, text: 'Transaction' }, ticks: { maxRotation: 90, minRotation: 45 } },
+            y: { title: { display: true, text: 'Balance' } }
+        }
+    }
+});
 
     const gainLossDisplay = document.getElementById('accgainlossdisp');
     const gainLossIcon = document.getElementById('gainorloss');
@@ -88,39 +136,6 @@ function recalculatepaycheck() {
         gainLossIcon.style.backgroundColor = 'rgb(165, 81, 81)';
     }
 
-
-    const ctx = document.getElementById('transactionChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dataPoints.map((_, i) => i),
-            datasets: [{
-                label: 'Balance',
-                data: dataPoints.map(dp => dp.balance),
-                borderColor: borderColor,
-                backgroundColor: backgroundColor,
-                borderWidth: 2,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: { display: false },
-                y: { display: true, title: { display: true, text: 'Balance' } }
-            },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function (tooltipItem) {
-                            const dp = dataPoints[tooltipItem.dataIndex];
-                            return `Balance: ${dp.balance}   Transaction: ${dp.transaction}`;
-                        }
-                    }
-                }
-            }
-        }
-    });
 
     document.getElementById("pfponnav").src = "https://avatars.rotur.dev/" + window.parent.roturExtension.user.username;
 })();

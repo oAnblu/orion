@@ -5,6 +5,7 @@ var sidebar = document.getElementById("sidebar");
 var loader = document.getElementById("loader");
 var persohome = document.getElementById("persohome");
 var curtheme = localStorage.getItem("orion-theme") || "default";
+var accent = "#39335b";
 
 var theme = {
 	"default": {
@@ -284,6 +285,7 @@ openApp("home");
 function setTheme(themeName, documentItem = document.documentElement) {
 	themeName = themeName.toLowerCase();
 	var themeDecs = theme[themeName];
+	accent = themeDecs["--col-bgh"];
 	Object.keys(themeDecs).forEach(i => {
 		documentItem.style.setProperty(i, themeDecs[i]);
 	});
