@@ -7,11 +7,10 @@
 }
 
 :root {
-    --dull-bg: #000000;
-    --main-bg: #101010;
-    --main-bg2: #1e1e1e;
-    --high-bg: #33363b;
-    --box-crisp: 1px solid #393b41;
+    --col-bg1: #000000;
+    --col-bg2: #101010;
+    --col-bg3: #1e1e1e;
+    --col-bgh: #33363b;
 }
 
 ::-webkit-scrollbar {
@@ -24,12 +23,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--dull-bg);
+    background: var(--col-bg1);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--high-bg);
+    background: var(--col-bgh);
 }
 
 * {
@@ -58,7 +57,7 @@ body {
     height: 100%;
     width: 100%;
     margin: 0;
-    background-color: var(--dull-bg);
+    background-color: var(--col-bg1);
     color: white;
     display: flex;
     flex-direction: column;
@@ -79,12 +78,21 @@ body {
 }
 
 .top_panel {
-    width: 100%;
-    background-color: var(--main-bg2) !important;
+    width: calc(100% - 1.6em);
+    background-color: var(--col-bg3) !important;
     padding: .8em;
+    display: flex;
+    justify-content: space-between;
+    gap: .3em;
 
     &.profile_card {
         padding: 3.5px;
+    }
+
+    &.open {
+        &>.opener_chev {
+            transform: rotate(90deg);
+        }
     }
 }
 
@@ -131,6 +139,13 @@ body {
     }
 }
 
+#serverControls {
+    padding: .5em;
+    background-color: var(--col-bg3);
+    border-radius: 0 0 .5em .5em;
+    display: none;
+}
+
 .server_ui {
     display: inherit;
     flex-direction: row;
@@ -139,8 +154,8 @@ body {
 
     &>.channels,
     &>.members_list {
-        width: 200px;
-        background-color: var(--main-bg);
+        width: 230px;
+        background-color: var(--col-bg2);
     }
 
     &>.channels,
@@ -170,47 +185,6 @@ body {
         &>hr {
             outline: 0;
         }
-
-        &>.single_chnl {
-            display: flex;
-            gap: .3em;
-            align-items: center;
-            padding: .3em;
-            border-radius: .5em;
-            background-color: inherit;
-            cursor: pointer;
-            background-color: var(--main-bg);
-            position: relative;
-
-            &>.badge {
-                position: absolute;
-                right: 5px;
-                background: white;
-                border-radius: 1em;
-                display: flex;
-                color: black;
-                font-family: monospace;
-                padding: 6px;
-                height: 10px;
-                font-size: 16px;
-                width: 10px;
-                align-items: center;
-                justify-content: center;
-            }
-
-            &:hover {
-                filter: brightness(140%);
-            }
-
-            &.active {
-                background: var(--main-bg2);
-            }
-
-            &>.symb {
-                font-size: 1.2em;
-                opacity: .7;
-            }
-        }
     }
 
     .feed {
@@ -224,7 +198,7 @@ body {
             flex-direction: row;
             justify-content: space-between;
             padding: .3em .5em;
-            background: var(--high-bg);
+            background: var(--col-bgh);
             border-radius: .5em .5em 0 0;
             margin: 0 1em;
             align-items: center;
@@ -262,7 +236,7 @@ body {
         &>.msg_area {
             width: calc(100% - 1em);
             display: flex;
-            background: var(--main-bg);
+            background: var(--col-bg2);
             border-radius: .5em;
             margin: 0em .5em;
             margin-bottom: .5em;
@@ -278,6 +252,47 @@ body {
                 outline: 0;
             }
         }
+    }
+}
+
+.single_chnl {
+    display: flex;
+    gap: .3em;
+    align-items: center;
+    padding: .3em;
+    border-radius: .5em;
+    background-color: inherit;
+    cursor: pointer;
+    background-color: var(--col-bg2);
+    position: relative;
+
+    &>.badge {
+        position: absolute;
+        right: 5px;
+        background: white;
+        border-radius: 1em;
+        display: flex;
+        color: black;
+        font-family: monospace;
+        padding: 6px;
+        height: 10px;
+        font-size: 16px;
+        width: 10px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &:hover {
+        filter: brightness(140%);
+    }
+
+    &.active {
+        background: var(--col-bg3);
+    }
+
+    &>.symb {
+        font-size: 1.2em;
+        opacity: .7;
     }
 }
 
@@ -395,7 +410,7 @@ body {
     .msg_actions {
         position: absolute;
         right: .5em;
-        background: var(--main-bg);
+        background: var(--col-bg2);
         border: var(--box-crisp);
         border-radius: .5em;
         display: flex;
@@ -526,6 +541,7 @@ hr {
 @media only screen and (max-width: 500px) {
     .members_list {
         width: 20px !important;
+
         &:hover {
             width: 200px !important;
         }

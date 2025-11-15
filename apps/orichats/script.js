@@ -746,3 +746,21 @@ function hidereplyPrompt() {
     }
     document.querySelectorAll('.replyingto').forEach(el => el.classList.remove('replyingto'))
 }
+
+var topPanel = document.getElementById("top_panel");
+document.getElementById("top_panel").addEventListener("click", () => {
+    var ele = document.getElementById("serverControls");
+    if (topPanel.classList.contains("open")) {
+        topPanel.classList.remove("open");
+        ele.style.display = "none"
+    } else {
+        topPanel.classList.add("open");
+        ele.style.display = "block"
+    }
+})
+
+async function changeServer() {
+    currentServer = await window.parent.ask("Enter a server URL:") || currentServer;
+    ws.close();
+    connectWebSocket();
+}

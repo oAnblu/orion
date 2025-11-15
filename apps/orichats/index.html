@@ -12,6 +12,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../nova.css">
 </head>
 
 <body>
@@ -26,7 +27,17 @@
         <div class="server_ui">
 
             <div class="channels">
-                <div class="server_data top_panel">OriginChats</div>
+                <div class="server_data top_panel" id="top_panel"><span>OriginChats</span><span class="material-symbols-rounded opener_chev">arrow_right</span></div>
+                <div id="serverControls">
+                    <div class="single_chnl" onclick="changeServer()">
+                        <div class="symb">
+                            swap_vert
+                        </div>
+                        <div class="name">
+                            Use a different server
+                        </div>
+                    </div>
+                </div>
                 <div id="channels">
                     <div class="single_chnl">
                         <div class="symb">
