@@ -77,12 +77,15 @@ body {
     width: 200px;
 }
 
+#top_panel {    
+    justify-content: space-between;
+}
+
 .top_panel {
     width: calc(100% - 1.6em);
     background-color: var(--col-bg3) !important;
     padding: .8em;
     display: flex;
-    justify-content: space-between;
     gap: .3em;
 
     &.profile_card {
