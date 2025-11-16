@@ -301,7 +301,18 @@ document.getElementById("themesel").addEventListener("change", (ev) => {
 setTheme(curtheme);
 document.getElementById("themesel").value = curtheme;
 
-document.getElementById("sidebarapp").style.display = 'none';
+var sidebarCont = document.getElementById("sidebarapp");
+var sidebarappframe = document.getElementById("sidebarappframe");
+sidebarCont.style.display = 'none';
+function launchSideBarApp(name, data) {
+	sidebarCont.style.display = 'flex';
+	sidebarappframe.src = "apps/" + name;
+	try {
+		sidebarappframe.contentWindow.greenflag({data: data})
+	} catch {}
+}
+
+launchSideBarApp("contacts", { name: "mist" })
 
 document.querySelectorAll(".checkbox").forEach(item => {
 	var dataSetting = item.getAttribute("data-setting");
@@ -322,3 +333,4 @@ document.querySelectorAll(".checkbox").forEach(item => {
 		}
 	}
 })
+

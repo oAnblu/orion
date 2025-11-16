@@ -249,6 +249,22 @@ div#toastdiv {
     flex: 2;
     min-width: 300px;
     border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+    border: var(--box-crisp);
+
+    &>.sidebarheader {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 1em;
+        padding: .5em;
+        background-color: var(--col-bg2);
+        &>i {
+            font-size: 20px;
+            cursor: pointer;
+        }
+    }
 
     &>iframe {
         width: 100%;

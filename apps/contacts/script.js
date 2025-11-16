@@ -126,6 +126,11 @@ function renderICN(code, canvas) {
     ctx.restore();
 }
 
-
-
-renderICN("w 8 c #444 square 0 0 6 6 w 6 c #111 square 0 0 5 5 dot 0 0 c #ddd w 1.3 cutcircle 0 0 6.5 4.5 150 cutcircle 0 0 3.5 5 150 line -1 -2 -4.5 -5.5", document.getElementById("c"))
+function greenflag(myWindow) {
+    console.log(88, myWindow.data)
+    if (myWindow) {
+        renderProfile(myWindow.data.name);
+    } else {
+        renderProfile(window.parent.roturExtension.user.username)
+    }
+}
