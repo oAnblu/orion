@@ -593,7 +593,7 @@ function scrollToTop() {
 }
 
 async function moreinfo() {
-    window.parent.launchSideBarApp("contacts", { name: uname })
+    window.parent.launchSideBarApp("contacts", { name: selecteduser })
 }
 
 async function toggleOrionEnc() {
