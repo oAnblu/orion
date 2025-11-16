@@ -1719,7 +1719,10 @@ async function roturTWEventCall(data) {
             if (s) openApp(s)
 
         })();
-    } else if (data == "roturEXT_whenDisconnected") {
+    } else if (data == "roturEXT_whenAccountUpdate") {
+		if (iframe.contentWindow?.userKeysUpdate)
+			iframe.contentWindow.userKeysUpdate();
+	} else if (data == "roturEXT_whenDisconnected") {
         attemptConnection();
     }
 }

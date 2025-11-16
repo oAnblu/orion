@@ -1,8 +1,3 @@
-let emojis;
-fetch("emojis.json").then(async r =>{
-	emojis = await r.json();
-})
-
 if (localStorage.getItem("currentServer")) {
     currentServer = localStorage.getItem("currentServer");
 } else {
@@ -12,8 +7,10 @@ if (localStorage.getItem("currentServer")) {
 
 let state = {
     _currentChannel: "general",
+	showBlockedMsgs: true,
     server: {},
     user: null,
+	userKeys: null,
     validator: null,
     validator_key: null,
     users: {},
@@ -39,7 +36,24 @@ let state = {
     },
 };
 
+let emojis;
+fetch("emojis.json").then(async r =>{
+	if (!r.ok) {
+		console.warn("Failed to get emojis!")
+		emojis = []; // default to none
+		return;
+	}
+
+	emojis = await r.json();
+})
+
+userKeysUpdate();
 let ws = null;
+
+function userKeysUpdate() {
+	state.userKeys = window.parent.roturExtension.user ?? {};
+	console.log("user keys updated", state.userKeys);
+}
 
 function connectWebSocket() {
     if (ws && (ws.readyState === 0 || ws.readyState === 1)) return;
@@ -61,7 +75,7 @@ function escapeHTML(str) {
 
 function replaceEmojis(str) {
 	for (const emoji of emojis)
-		str = str.replaceAll(":" + emoji.label.replaceAll(" ", "-") + ":", emoji.emoji);
+		str = str.replaceAll(":" + emoji.label.replaceAll(" ", "_") + ":", emoji.emoji);
 
 	return str;
 }
@@ -458,7 +472,7 @@ function renderReplyExcerpt(message) {
         hintedUser = message.reply_to.user || "";
     }
     if (!replyId) return "";
-    lastmsgun = null;
+    lastmsgid = null;
     const ref =
         message.reply_to_message ||
         state.messages[replyId] ||
@@ -546,99 +560,152 @@ function updateChannelUnread(channelName) {
     }
 }
 
-var lastmsgun = null;
+var lastmsgid = null;
 function renderMessage(message) {
-    if (message && message.id) {
-        const mid = message.id;
+	if (message && message.id) {
+		const mid = message.id;
         state.messages[mid] = message;
         if (!message.id) message.id = mid;
     }
-    const timestamp = message["timestamp"];
-    const date = new Date(timestamp * 1000);
-    const mdText = formatMessageContent(message["content"]);
-    const replyBlock = renderReplyExcerpt(message);
-    let html;
-    if (message["user"] === lastmsgun) {
-        html = `
-        <div class="sing_msg extra">
-                ${replyBlock}
-                <div class="msg_ctnt extra">
-            <div class="time" title="${date.toLocaleString()}">${escapeHTML(date.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }))}</div>
-            <div class="data">
-                <p>${mdText}</p>${message.edited ? '<span class="edited-tag">(edited)</span>' : ""}
-            </div>
-            </div>
-        </div>
-        `.trim();
-    } else {
-        const userColor = getUserColor(message["user"]);
-        let olkscr = `window.parent.launchSideBarApp('contacts', { name: '${escapeHTML(message["user"])}' })`;
-        html = `
-        <div class="sing_msg" data-id="${escapeHTML(message.id || "")}" data-user="${escapeHTML(message["user"])}">
-                ${replyBlock}
-                <div class="msg_ctnt">
-            <img class="pfp" src="https://avatars.rotur.dev/${encodeURIComponent(message["user"])}" alt="${escapeHTML(message["user"])}" onclick="${olkscr}">
-            <div class="data">
-                <div class="header">
-                    <div class="name" onclick="${olkscr}" style="color:${userColor}">${escapeHTML(message["user"])}</div>
-                    <div class="time" title="${date.toLocaleString()}">${escapeHTML(date.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }))}</div>
-                </div>
-                <p>${mdText}</p>${message.edited ? '<span class="edited-tag">(edited)</span>' : ""}
-            </div>
-            </div>
-        </div>
-        `.trim();
-    }
-    lastmsgun = message["user"];
-    const wrapper = document.createElement("div");
-    wrapper.innerHTML = html;
-    let repllkbtns = document.createElement("div");
-    repllkbtns.classList.add("msg_actions");
-    let replybtn = document.createElement("div");
-    replybtn.classList.add("button");
-    replybtn.classList.add("symb");
-    replybtn.innerText = "reply"
-    repllkbtns.appendChild(replybtn);
-    replybtn.onclick = () => {
-        if (state.editing) cancelEdit();
-        state.reply_to[state.currentChannel] = message;
-        if (canSend(state.currentChannel)) showreplyPrompt(message);
-    }
-    if (message["user"] == state.user.username) {
-        let deletebtn = document.createElement("div");
-        deletebtn.classList.add("button");
-        deletebtn.classList.add("symb");
-        deletebtn.innerText = "delete"
-        repllkbtns.appendChild(deletebtn);
-        deletebtn.onclick = () => {
-            ws.send(
-                JSON.stringify({
-                    cmd: "message_delete",
-                    channel: state.currentChannel,
-                    id: message.id,
-                }),
-            );
-        }
-    }
-    let copybtn = document.createElement("div");
-    copybtn.classList.add("button");
-    copybtn.classList.add("symb");
-    copybtn.innerText = "content_copy"
-    repllkbtns.appendChild(copybtn);
-    copybtn.onclick = () => {
-        navigator.clipboard?.writeText(message.content || "").catch(() => { });
-    }
 
-    const messageDiv = wrapper.firstElementChild;
-    messageDiv.appendChild(repllkbtns);
-    return messageDiv;
+	const prevmsg = state.messages[lastmsgid] ?? null;
+	lastmsgid = message.id;
+	const blocked = (state.userKeys["sys.blocked"] ?? []).includes(message["user"]);
+	if (blocked && !state.showBlockedMsgs) return;
+
+	function actuallyRender() {
+		const timestamp = message["timestamp"];
+		const date = new Date(timestamp * 1000);
+		const shouldGroup = !blocked && message["user"] === (prevmsg ?? { user: "" })["user"]; 
+		const mdText = formatMessageContent(message["content"]);
+		const replyBlock = renderReplyExcerpt(message);
+		let html;
+		if (shouldGroup) {
+			html = `
+			<div class="sing_msg extra">
+					${replyBlock}
+					<div class="msg_ctnt extra">
+				<div class="time" title="${date.toLocaleString()}">${escapeHTML(date.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }))}</div>
+				<div class="data">
+					<p>${mdText}</p>${message.edited ? '<span class="edited-tag">(edited)</span>' : ""}
+				</div>
+				</div>
+			</div>
+			`.trim();
+		} else {
+			const userColor = getUserColor(message["user"]);
+			html = `
+			<div class="sing_msg" data-id="${escapeHTML(message.id || "")}" data-user="${escapeHTML(message["user"])}">
+						${replyBlock}
+						<div class="msg_ctnt">
+					<img class="pfp" src="https://avatars.rotur.dev/${encodeURIComponent(message["user"])}" alt="${escapeHTML(message["user"])}">
+					<div class="data">
+						<div class="header">
+							<div class="name" style="color:${userColor}">${escapeHTML(message["user"])}</div>
+							<div class="time" title="${date.toLocaleString()}">${escapeHTML(date.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }))}</div>
+						</div>
+					<p>${mdText}</p>${message.edited ? '<span class="edited-tag">(edited)</span>' : ""}
+				</div>
+				</div>
+			</div>
+			`.trim();
+		}
+		const wrapper = document.createElement("div");
+		wrapper.innerHTML = html;
+		let repllkbtns = document.createElement("div");
+		repllkbtns.classList.add("msg_actions");
+		let replybtn = document.createElement("div");
+		replybtn.classList.add("button");
+		replybtn.classList.add("symb");
+		replybtn.innerText = "reply"
+		repllkbtns.appendChild(replybtn);
+		replybtn.onclick = () => {
+			if (state.editing) cancelEdit();
+			state.reply_to[state.currentChannel] = message;
+			if (canSend(state.currentChannel)) showreplyPrompt(message);
+		}
+		let deletebtn = document.createElement("div");
+		deletebtn.classList.add("button");
+		deletebtn.classList.add("symb");
+		deletebtn.innerText = "delete"
+		repllkbtns.appendChild(deletebtn);
+		deletebtn.onclick = () => {
+			ws.send(
+				JSON.stringify({
+					cmd: "message_delete",
+					channel: state.currentChannel,
+					id: message.id,
+				}),
+			);
+		}
+		let copybtn = document.createElement("div");
+		copybtn.classList.add("button");
+		copybtn.classList.add("symb");
+		copybtn.innerText = "content_copy"
+		repllkbtns.appendChild(copybtn);
+		copybtn.onclick = () => {
+			navigator.clipboard?.writeText(message.content || "").catch(() => { });
+		}
+
+		const messageDiv = wrapper.firstElementChild;
+		messageDiv.classList.add("message");
+		messageDiv.appendChild(repllkbtns);
+    	return messageDiv;
+	}
+
+	if (blocked) {
+		const blockedDiv = document.createElement("div");
+		const blockedHeader = document.createElement("div");
+		blockedHeader.classList.add("blockedheader");
+
+		const blockedIcon = document.createElement('span');
+		blockedIcon.classList.add("symb");
+		blockedIcon.textContent = "block";
+		blockedHeader.appendChild(blockedIcon);
+
+		const blockedText = document.createElement("span");
+		blockedText.textContent = "Blocked message —";
+		blockedHeader.appendChild(blockedText);
+
+		const blockedShowLink = document.createElement("a");
+		blockedShowLink.textContent = "Show";
+
+		let node;
+		blockedShowLink.addEventListener("click", ev => {
+			ev.preventDefault();
+
+			if (node) {
+				blockedShowLink.textContent = "Show";
+				blockedHeader.scrollIntoView();
+				node.remove();
+				node = undefined;
+				return;
+			}
+
+			node = actuallyRender();
+			if (node) {
+				blockedDiv.appendChild(node);
+				blockedShowLink.textContent = "Hide";
+				node.scrollIntoView();
+			}
+		})
+
+		blockedShowLink.href = "#";
+		blockedHeader.appendChild(blockedShowLink);
+
+		blockedDiv.appendChild(blockedHeader);
+		return blockedDiv;
+	}
+
+	return actuallyRender();
 }
 
 function listMessages(messageList) {
     const chatArea = document.getElementById("msgs_list");
     chatArea.innerHTML = "";
     for (let message of messageList) {
-        chatArea.appendChild(renderMessage(message));
+		const node = renderMessage(message);
+        if (node) chatArea.appendChild(node);
     }
     chatArea.scrollTop = chatArea.scrollHeight;
     lazier.end();
@@ -664,8 +731,7 @@ function addMessage(messagePacket) {
 
 
 function changeChannel(channel) {
-
-    lastmsgun = null;
+	lastmsgid = null;
     state.currentChannel = channel;
     document
         .querySelectorAll(".single_chnl")
