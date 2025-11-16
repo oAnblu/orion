@@ -396,6 +396,7 @@ body {
 
             &>p {
                 margin: 0;
+                user-select: text;
 
                 & a {
                     overflow: hidden;
@@ -557,4 +558,10 @@ hr {
             width: 200px !important;
         }
     }
+}
+
+span.mention {
+    padding: 2px 5px;
+    background: #678fff4d;
+    border-radius: .5em;
 }

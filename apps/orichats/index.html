@@ -13,6 +13,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../../nova.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/js.min.js"></script>
 </head>
 
 <body>
@@ -27,7 +30,8 @@
         <div class="server_ui">
 
             <div class="channels">
-                <div class="server_data top_panel" id="top_panel"><span>OriginChats</span><span class="material-symbols-rounded opener_chev">arrow_right</span></div>
+                <div class="server_data top_panel" id="top_panel"><span>OriginChats</span><span
+                        class="material-symbols-rounded opener_chev">arrow_right</span></div>
                 <div id="serverControls">
                     <div class="single_chnl" onclick="changeServer()">
                         <div class="symb">
@@ -71,6 +75,7 @@
                 <div class="msg_area">
 
                     <input type="text" placeholder="Message #General" id="mainTxtAr">
+                    <div id="typing">...</div>
                 </div>
             </div>
             <div class="members_list">
@@ -97,6 +102,7 @@
         </div>
     </div>
     <script src="script.js" async defer></script>
+
 </body>
 
 </html>

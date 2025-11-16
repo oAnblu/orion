@@ -177,6 +177,33 @@ function attachWsHandlers() {
                 if (state.editing && state.editing.id === mid) cancelEdit();
                 break;
             }
+            case 'typing':
+                const channel = data.channel;
+                const user = data.user;
+                if (user === state.currentUser?.username) break;
+
+                if (!state.typingUsers[channel]) {
+                    state.typingUsers[channel] = new Map();
+                }
+
+                if (channel === state.currentChannel) {
+                    const typingMap = state.typingUsers[channel];
+
+                    const expireAt = Date.now() + 10000;
+                    typingMap.set(user, expireAt);
+
+                    updateTypingIndicator();
+
+                    setTimeout(() => {
+                        if (typingMap.get(user) <= Date.now()) {
+                            typingMap.delete(user);
+                            updateTypingIndicator();
+                        }
+                    }, 5000);
+                }
+
+
+                break;
             case "users_list": {
                 const arr = data.users || [];
                 for (const u of arr) {
@@ -348,33 +375,64 @@ function replaceImageLinks(text) {
         "![]($1)",
     );
 }
-
 function formatMessageContent(raw) {
     if (typeof raw !== "string") raw = String(raw ?? "");
     const emojiRegex = /^\p{Extended_Pictographic}$/u;
     if (emojiRegex.test(raw)) return `<span style="font-size:2em;line-height:1">${raw}</span>`;
+
+    const codeBlockRegex = /```(\w+)?([\s\S]*?)```/g;
+    const codeBlocks = [];
+    let i = 0;
+    raw = raw.replace(codeBlockRegex, (_, lang, code) => {
+        const token = `__CDBLK_${i}__`;
+        codeBlocks.push({ token, html: `<div><pre><code class="language-${lang}">${escapeHTML(code)}</code></pre></div>` });
+        i++;
+        return token;
+    });
+
+    const inlineFormats = [
+        { r: /\*\*(.+?)\*\*/g, t: "<b>$1</b>" },
+        { r: /\*(.+?)\*/g, t: "<i>$1</i>" },
+        { r: /`([^`]+)`/g, t: "<kbd>$1</kbd>" },
+        { r: /__([^_]+)__/g, t: "<u>$1</u>" }
+    ];
+    inlineFormats.forEach(f => raw = raw.replace(f.r, f.t));
+
+    const headingRegex = [
+        { r: /^# (.+)$/gm, t: "<h1>$1</h1>" },
+        { r: /^## (.+)$/gm, t: "<h2>$1</h2>" },
+        { r: /^### (.+)$/gm, t: "<h3>$1</h3>" },
+        { r: /^-# (.+)$/gm, t: "<div style=\"font-size:0.8em;font-weight:bold\">$1</div>" }
+    ];
+    headingRegex.forEach(f => raw = raw.replace(f.r, f.t));
+
+    raw = raw.replace(/@(\w+)/g, `<span class="mention">@$1</span>`);
+
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     let out = "";
-    let lastIndex = 0;
-    let match;
-    while ((match = urlRegex.exec(raw))) {
-        const [url] = match;
-        const idx = match.index;
-        if (idx > lastIndex) out += escapeHTML(raw.slice(lastIndex, idx));
-        const proxiedUrl = `https://proxy.mistium.com/cors?url=${encodeURIComponent(url)}`;
-        const safeHref = escapeHTML(proxiedUrl);
-        const safeText = escapeHTML(url);
-        if (/\.(webp|png|jpe?g|gif|svg)$/i.test(url)) {
-            out += `<img src="${safeHref}" alt="${safeText}">`;
-        } else {
-            out += `<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${safeText}</a>`;
-        }
-        lastIndex = idx + url.length;
+    let last = 0;
+    let m;
+    while ((m = urlRegex.exec(raw))) {
+        const url = m[0];
+        const idx = m.index;
+        if (idx > last) out += raw.slice(last, idx);
+        const safeHref = encodeURI(url);
+        if (/\.(webp|png|jpe?g|gif|svg)$/i.test(url)) out += `<img src="${safeHref}" alt="${safeHref}">`;
+        else out += `<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${safeHref}</a>`;
+        last = idx + url.length;
     }
-    if (lastIndex < raw.length) out += escapeHTML(raw.slice(lastIndex));
+    if (last < raw.length) out += raw.slice(last);
+
     out = out.replace(/\r?\n/g, "<br>");
+
+    codeBlocks.forEach(b => out = out.replace(b.token, b.html));
     return out;
 }
+
+function escapeHTML(s) {
+    return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c]));
+}
+
 
 function renderReplyExcerpt(message) {
     if (!message.reply_to) return "";
@@ -530,6 +588,29 @@ function renderMessage(message) {
         state.reply_to[state.currentChannel] = message;
         if (canSend(state.currentChannel)) showreplyPrompt(message);
     }
+    let deletebtn = document.createElement("div");
+    deletebtn.classList.add("button");
+    deletebtn.classList.add("symb");
+    deletebtn.innerText = "delete"
+    repllkbtns.appendChild(deletebtn);
+    deletebtn.onclick = () => {
+        ws.send(
+            JSON.stringify({
+                cmd: "message_delete",
+                channel: state.currentChannel,
+                id: message.id,
+            }),
+        );
+    }
+    let copybtn = document.createElement("div");
+    copybtn.classList.add("button");
+    copybtn.classList.add("symb");
+    copybtn.innerText = "content_copy"
+    repllkbtns.appendChild(copybtn);
+    copybtn.onclick = () => {
+        navigator.clipboard?.writeText(message.content || "").catch(() => { });
+    }
+
     const messageDiv = wrapper.firstElementChild;
     messageDiv.appendChild(repllkbtns);
     return messageDiv;
@@ -544,6 +625,7 @@ function listMessages(messageList) {
     chatArea.scrollTop = chatArea.scrollHeight;
     lazier.end();
     attemptResolveAllMissingReplies();
+    hljs.highlightAll();
 }
 
 function addMessage(messagePacket) {
@@ -573,6 +655,8 @@ function changeChannel(channel) {
             if (el.id === `channel_${channel}`) el.classList.add("active");
             else el.classList.remove("active");
         });
+
+    document.getElementsByClassName("channel_name")[0].innerText = channel;
     const mainTxtAr = document.getElementById("mainTxtAr");
     if (mainTxtAr) mainTxtAr.placeholder = `Message #${channel}`;
     if (state.unread[channel]) {
@@ -764,3 +848,79 @@ async function changeServer() {
     ws.close();
     connectWebSocket();
 }
+
+
+function updateTypingIndicator() {
+    const typingEl = document.getElementById("typing");
+    if (!typingEl) return;
+
+    const channel = state.currentChannel;
+    if (!channel) return;
+
+    const typingMap = state.typingUsers[channel];
+    if (!typingMap) return;
+
+    const now = Date.now();
+    for (const [user, expiry] of typingMap) {
+        if (expiry < now) typingMap.delete(user);
+    }
+
+    const users = [...typingMap.keys()];
+
+    if (users.length === 0) {
+        typingEl.textContent = "";
+        typingEl.style.display = "none";
+        return;
+    }
+
+    typingEl.style.display = "block";
+
+    let text = "";
+    if (users.length === 1) {
+        text = `${users[0]} is typing...`;
+    } else if (users.length === 2) {
+        text = `${users[0]} and ${users[1]} are typing...`;
+    } else {
+        text = `${users.length} people are typing...`;
+    }
+
+    typingEl.textContent = text;
+}
+function handleMessageNotification() {
+
+}
+
+let typing = false;
+let lastTyped = 0;
+
+function setupTypingListener() {
+    const input = document.getElementById("mainTxtAr");
+
+    input.addEventListener("input", () => {
+        lastTyped = Date.now();
+
+        if (!typing) {
+            typing = true;
+            sendTyping();
+            watchForStopTyping();
+        }
+    });
+}
+
+function watchForStopTyping() {
+    const interval = setInterval(() => {
+        if (Date.now() - lastTyped > 1200) {
+            typing = false;
+            clearInterval(interval);
+        }
+    }, 300);
+}
+
+function sendTyping() {
+    ws.send({ cmd: 'typing', channel: state.currentChannel });
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+
+    setupTypingListener();
+})
