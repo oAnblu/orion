@@ -128,7 +128,7 @@ function attachWsHandlers() {
             }
             case "ready": {
                 state.user = data.user;
-                console.log("User ready", state.user);
+                console.log("User ready", JSON.parse(state.user));
                 updateUserPanel();
                 break;
             }
@@ -406,7 +406,7 @@ function formatMessageContent(raw) {
     ];
     headingRegex.forEach(f => raw = raw.replace(f.r, f.t));
 
-    raw = raw.replace(/@(\w+)/g, `<span class="mention">@$1</span>`);
+    raw = raw.replace(/@(\w+)/g, `<span class="mention" onclick="window.parent.launchSideBarApp('contacts', { name: '$1' })">@$1</span>`);
 
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     let out = "";
@@ -430,7 +430,7 @@ function formatMessageContent(raw) {
 }
 
 function escapeHTML(s) {
-    return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c]));
+    return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c]));
 }
 
 
@@ -589,19 +589,21 @@ function renderMessage(message) {
         state.reply_to[state.currentChannel] = message;
         if (canSend(state.currentChannel)) showreplyPrompt(message);
     }
-    let deletebtn = document.createElement("div");
-    deletebtn.classList.add("button");
-    deletebtn.classList.add("symb");
-    deletebtn.innerText = "delete"
-    repllkbtns.appendChild(deletebtn);
-    deletebtn.onclick = () => {
-        ws.send(
-            JSON.stringify({
-                cmd: "message_delete",
-                channel: state.currentChannel,
-                id: message.id,
-            }),
-        );
+    if (message["user"] == state.user.username) {
+        let deletebtn = document.createElement("div");
+        deletebtn.classList.add("button");
+        deletebtn.classList.add("symb");
+        deletebtn.innerText = "delete"
+        repllkbtns.appendChild(deletebtn);
+        deletebtn.onclick = () => {
+            ws.send(
+                JSON.stringify({
+                    cmd: "message_delete",
+                    channel: state.currentChannel,
+                    id: message.id,
+                }),
+            );
+        }
     }
     let copybtn = document.createElement("div");
     copybtn.classList.add("button");
