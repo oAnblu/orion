@@ -7,10 +7,11 @@ if (localStorage.getItem("currentServer")) {
 
 let state = {
     _currentChannel: "general",
-	showBlockedMsgs: true,
+	members_list_shown: true,
+	show_blocked_msgs: true,
     server: {},
     user: null,
-	userKeys: null,
+	user_keys: null,
     validator: null,
     validator_key: null,
     users: {},
@@ -49,10 +50,20 @@ fetch("emojis.json").then(async r =>{
 
 userKeysUpdate();
 let ws = null;
+const membersList = document.querySelector(".members_list");
+
+document.getElementById("memberlistbtn")?.addEventListener("click", () => {
+	if (state.members_list_shown)
+		membersList.remove();
+	else
+		document.querySelector(".server_ui").append(membersList);
+
+	state.members_list_shown = !state.members_list_shown;
+})
 
 function userKeysUpdate() {
-	state.userKeys = window.parent.roturExtension.user ?? {};
-	console.log("user keys updated", state.userKeys);
+	state.user_keys = window.parent.roturExtension.user ?? {};
+	console.log("user keys updated", state.user_keys);
 }
 
 function connectWebSocket() {
@@ -570,8 +581,8 @@ function renderMessage(message) {
 
 	const prevmsg = state.messages[lastmsgid] ?? null;
 	lastmsgid = message.id;
-	const blocked = (state.userKeys["sys.blocked"] ?? []).includes(message["user"]);
-	if (blocked && !state.showBlockedMsgs) return;
+	const blocked = (state.user_keys["sys.blocked"] ?? []).includes(message["user"]);
+	if (blocked && !state.show_blocked_msgs) return;
 
 	function actuallyRender() {
 		const timestamp = message["timestamp"];
@@ -774,8 +785,8 @@ function getUserColor(username) {
 
 
 function renderMembers() {
-    const root = document.getElementsByClassName("members_lists")[0];
-    if (!root) return;
+	const root = document.getElementsByClassName("members_lists")[0];
+	if (!root) return;
     root.innerHTML = "";
 
     const owners = [];

@@ -82,9 +82,11 @@ body {
 }
 
 .top_panel {
-    width: calc(100% - 1.6em);
+	width: calc(100% - 1.6em);
     background-color: var(--col-bg3) !important;
     padding: .8em;
+	justify-content: space-between;
+	align-content: center;
     display: flex;
     gap: .3em;
 
@@ -581,4 +583,10 @@ div.blockedheader > div.message {
 div.blockedheader > a {
 	text-decoration: none;
 	color: #1397cb;
+}
+
+#memberlistbtn {
+	background-color: transparent;
+	border: none;
+	color: white;
 }
