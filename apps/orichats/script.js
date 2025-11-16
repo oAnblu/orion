@@ -1,3 +1,8 @@
+let emojis;
+fetch("emojis.json").then(async r =>{
+	emojis = await r.json();
+})
+
 if (localStorage.getItem("currentServer")) {
     currentServer = localStorage.getItem("currentServer");
 } else {
@@ -54,6 +59,13 @@ function escapeHTML(str) {
         .replace(/'/g, "&#39;");
 }
 
+function replaceEmojis(str) {
+	for (const emoji of emojis)
+		str = str.replaceAll(":" + emoji.label.replaceAll(" ", "-") + ":", emoji.emoji);
+
+	return str;
+}
+
 function roturToken() {
     return window.parent.roturExtension.userToken;
 }
@@ -108,7 +120,7 @@ function attachWsHandlers() {
                         if (ev.key === "Enter" && !ev.shiftKey) {
                             const payload = {
                                 cmd: "message_new",
-                                content: input.value,
+                                content: replaceEmojis(input.value),
                                 channel: state.currentChannel,
                             };
                             const r = state.reply_to[state.currentChannel];
@@ -375,8 +387,11 @@ function replaceImageLinks(text) {
         "![]($1)",
     );
 }
+
 function formatMessageContent(raw) {
     if (typeof raw !== "string") raw = String(raw ?? "");
+	raw = replaceEmojis(raw);
+
     const emojiRegex = /^\p{Extended_Pictographic}$/u;
     if (emojiRegex.test(raw)) return `<span style="font-size:2em;line-height:1">${raw}</span>`;
 
