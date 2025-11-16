@@ -129,6 +129,8 @@ function renderICN(code, canvas) {
     ctx.restore();
 }
 
+renderICN(`c #8b4513 w 2 line -13 -3 13 3 w 1 line 13 3 20 3 line 13 3 19 5 line 13 3 19 1`, document.getElementById("c"))
+
 loader.style.display = "flex";
 
 function greenflag(myWindow) {
