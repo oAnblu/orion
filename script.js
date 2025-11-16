@@ -312,8 +312,6 @@ function launchSideBarApp(name, data) {
 	} catch {}
 }
 
-launchSideBarApp("contacts", { name: "mist" })
-
 document.querySelectorAll(".checkbox").forEach(item => {
 	var dataSetting = item.getAttribute("data-setting");
 	if (localStorage.getItem("orion_" + dataSetting) != false) {
