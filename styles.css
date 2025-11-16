@@ -24,7 +24,7 @@ body {
         transition: width .3s;
     }
 
-    &>.divider {
+    &>#divider {
         background-color: var(--col-bg1);
         height: 100%;
         display: flex;
@@ -230,6 +230,7 @@ div#toastdiv {
     overflow: hidden;
     transition: .3s;
     position: relative;
+    resize: horizontal;
 
     &>img.oriloaderstatic {
         position: absolute;
@@ -672,4 +673,18 @@ dialog {
     padding: 1em;
     background: var(--col-bg3);
     border-radius: .5em;
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+#overlay.active {
+    pointer-events: all;
 }

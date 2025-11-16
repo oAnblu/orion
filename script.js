@@ -302,12 +302,39 @@ setTheme(curtheme);
 document.getElementById("themesel").value = curtheme;
 
 var sidebarCont = document.getElementById("sidebarapp");
-var sidebarappframe = document.getElementById("sidebarappframe");
+var divider = document.querySelector('#divider');
+var overlay = document.getElementById('overlay');
 
-sidebarCont.style.width = '0';
-sidebarCont.style.flex = '0'
+let isDragging = false;
+let startX = 0;
+let startWidth = 0;
+
+divider.addEventListener('mousedown', e => {
+    isDragging = true;
+    startX = e.clientX;
+    startWidth = sidebarCont.offsetWidth;
+    overlay.classList.add('active');
+    document.body.style.userSelect = 'none';
+});
+
+document.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const dx = startX - e.clientX;
+    let newWidth = startWidth + dx;
+    if (newWidth < 0) newWidth = 0;
+    sidebarCont.style.flexBasis = newWidth + 'px';
+});
+
+document.addEventListener('mouseup', e => {
+    if (!isDragging) return;
+    isDragging = false;
+    overlay.classList.remove('active');
+    document.body.style.userSelect = '';
+});
+
+sidebarCont.style.flex = '0 0 0';
 sidebarCont.style.overflow = 'hidden';
-sidebarCont.classList.add('sidebar-transition');
+
 
 function launchSideBarApp(name, data) {
     sidebarCont.style.display = 'flex';
