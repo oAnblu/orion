@@ -80,8 +80,6 @@ a.link {
         margin: 8px;
         font-weight: 800;
     }
-
-
 }
 
 div#mainHead {
@@ -245,9 +243,15 @@ div#toastdiv {
     }
 }
 
+.sidebar-transition {
+    transition: flex 0.2s ease, width 0.2s ease;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 #sidebarapp {
     flex: 2;
-    min-width: 300px;
+    width: 300px;
     border-radius: 1em;
     display: flex;
     flex-direction: column;

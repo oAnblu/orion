@@ -52,7 +52,7 @@ async function loadFeed(type = 'claw', obj, useOffset = false, torefresh = false
     if (useOffset == false) {
         scrollToTop();
     }
-        clawloader.show();
+    clawloader.show();
     const feedContainer = document.getElementById("feed");
     var response, posts;
     if (type == 'claw') {
@@ -593,13 +593,7 @@ function scrollToTop() {
 }
 
 async function moreinfo() {
-    let resp1 = await fetch("https://claw.rotur.dev/followers?username=" + selecteduser);
-    let resp2 = await fetch("https://claw.rotur.dev/following?username=" + selecteduser);
-
-    let followers = await resp1.json();
-    let following = await resp2.json();
-
-    window.parent.say(`<p>Following: ${following.following.join(", ")}</p><p>Followers: ${followers.followers.join(", ")}</p>`);
+    window.parent.launchSideBarApp("contacts", { name: uname })
 }
 
 async function toggleOrionEnc() {

@@ -557,14 +557,15 @@ function renderMessage(message) {
         `.trim();
     } else {
         const userColor = getUserColor(message["user"]);
+        let olkscr = `window.parent.launchSideBarApp('contacts', { name: '${escapeHTML(message["user"])}' })`;
         html = `
         <div class="sing_msg" data-id="${escapeHTML(message.id || "")}" data-user="${escapeHTML(message["user"])}">
                 ${replyBlock}
                 <div class="msg_ctnt">
-            <img class="pfp" src="https://avatars.rotur.dev/${encodeURIComponent(message["user"])}" alt="${escapeHTML(message["user"])}">
+            <img class="pfp" src="https://avatars.rotur.dev/${encodeURIComponent(message["user"])}" alt="${escapeHTML(message["user"])}" onclick="${olkscr}">
             <div class="data">
                 <div class="header">
-                    <div class="name" style="color:${userColor}">${escapeHTML(message["user"])}</div>
+                    <div class="name" onclick="${olkscr}" style="color:${userColor}">${escapeHTML(message["user"])}</div>
                     <div class="time" title="${date.toLocaleString()}">${escapeHTML(date.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }))}</div>
                 </div>
                 <p>${mdText}</p>${message.edited ? '<span class="edited-tag">(edited)</span>' : ""}
@@ -728,6 +729,9 @@ function renderMembers() {
         for (const u of list) {
             const uname = u.username;
             const entry = document.createElement("div");
+            entry.onclick = () => {
+                window.parent.launchSideBarApp("contacts", { name: uname })
+            }
             entry.className = "profile_card" + (opts.offline ? " offline" : "");
             const color = getUserColor(uname);
             const disp = escapeHTML(u.displayName || uname);

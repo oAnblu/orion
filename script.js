@@ -303,13 +303,24 @@ document.getElementById("themesel").value = curtheme;
 
 var sidebarCont = document.getElementById("sidebarapp");
 var sidebarappframe = document.getElementById("sidebarappframe");
-sidebarCont.style.display = 'none';
+
+sidebarCont.style.width = '0';
+sidebarCont.style.flex = '0'
+sidebarCont.style.overflow = 'hidden';
+sidebarCont.classList.add('sidebar-transition');
+
 function launchSideBarApp(name, data) {
-	sidebarCont.style.display = 'flex';
-	sidebarappframe.src = "apps/" + name;
-	try {
-		sidebarappframe.contentWindow.greenflag({data: data})
-	} catch {}
+    sidebarCont.style.display = 'flex';
+    setTimeout(() => sidebarCont.style.flex = '2', 50);
+    sidebarappframe.src = "apps/" + name;
+    sidebarappframe.onload = () => {
+        try { sidebarappframe.contentWindow.greenflag({ data }) } catch {}
+    }
+}
+
+function closeSideBar() {
+    sidebarCont.style.flex = '0';
+    setTimeout(() => sidebarCont.style.display = 'none', 200);
 }
 
 document.querySelectorAll(".checkbox").forEach(item => {
