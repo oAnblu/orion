@@ -13,13 +13,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../../nova.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/js.min.js"></script>
 </head>
 
 <body>
-    <div id="orion">
+    <div id="orion" onclick="window.dispatchEvent(new Event('DOMContentLoaded'))">
         <span class="orion">OrionClient</span>
         <div class="loader"></div>
     </div>
@@ -55,11 +56,11 @@
             </div>
             <div class="feed">
                 <div class="top_panel">
-					<div class="channel_name">General</div>
-					<button id="memberlistbtn">
-						<span class="symb">group</span>
-					</button>
-				</div>
+                    <div class="channel_name">General</div>
+                    <button id="memberlistbtn">
+                        <span class="symb">group</span>
+                    </button>
+                </div>
                 <div id="msgs_list">
                     <div class="sing_msg">
                         <img src="https://rotur.dev/Rotur%20Logo.png" class="pfp">
@@ -78,8 +79,15 @@
                     <div class="clsbtn symb">close</div>
                 </div>
                 <div class="msg_area">
-
-                    <input type="text" placeholder="Message #General" id="mainTxtAr">
+                    <div class="floating" id="emojipicker">
+                        <input id="emojiSearch" placeholder="Search emojis..."></input>
+                        <div id="emojiscrollable">
+                        </div>
+                    </div>
+                    <div class="messagebar"><input type="text" placeholder="Message #General" id="mainTxtAr">
+                        <i class="material-symbols-rounded" onclick="toggleEmojiMenu()">mood</i>
+                        <i class="material-symbols-rounded">send</i>
+                    </div>
                     <div id="typing">...</div>
                 </div>
             </div>

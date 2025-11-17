@@ -38,15 +38,6 @@ let state = {
 };
 
 let emojis;
-fetch("emojis.json").then(async r => {
-    if (!r.ok) {
-        console.warn("Failed to get emojis!")
-        emojis = []; // default to none
-        return;
-    }
-
-    emojis = await r.json();
-})
 
 userKeysUpdate();
 let ws = null;
@@ -878,7 +869,6 @@ function updateUserPanel() {
         if (avatar) avatar.src = "assets/unknown.png";
     }
 }
-connectWebSocket();
 
 var loaderElement = document.getElementById("orion")
 var loader = {
@@ -1025,4 +1015,72 @@ function sendTyping() {
 window.addEventListener("DOMContentLoaded", () => {
 
     setupTypingListener();
+    console.log(33)
+    fetch("emojis.json").then(async r => {
+        console.log(34)
+        try {
+            if (!r.ok) {
+                console.warn("Failed to get emojis!")
+                emojis = [];
+            }
+
+            emojis = await r.json();
+            console.log(35)
+        } catch (error) {
+
+        }
+        connectWebSocket();
+        const container = document.getElementById("emojiscrollable");
+        const frag = document.createDocumentFragment();
+
+        for (const emoji of emojis) {
+            if (!emoji.emoji) continue;
+            const x = document.createElement("div");
+            x.dataset.char = emoji.emoji;
+            x.classList.add("single_emoji");
+            x.title = emoji.label.replaceAll(" ", "_");
+            frag.appendChild(x);
+        }
+        container.appendChild(frag);
+
+        const obs = new IntersectionObserver(entries => {
+            for (const e of entries) {
+                if (e.isIntersecting) {
+                    const el = e.target;
+                    el.innerText = el.dataset.char;
+                    obs.unobserve(el);
+                }
+            }
+        });
+
+        document.querySelectorAll(".single_emoji").forEach(el => obs.observe(el));
+        const input = document.getElementById("emojiSearch");
+
+        const match = (text, q) => {
+            let i = 0, j = 0;
+            while (i < text.length && j < q.length) {
+                if (text[i] === q[j]) j++;
+                i++;
+            }
+            return j === q.length;
+        };
+
+        input.addEventListener("input", e => {
+            const q = e.target.value.toLowerCase();
+            document.querySelectorAll(".single_emoji").forEach(el => {
+                const t = (el.title + el.dataset.char).toLowerCase();
+                el.style.display = match(t, q) ? "" : "none";
+            });
+        });
+
+    })
 })
+
+function toggleEmojiMenu() {
+    const picker = document.getElementById("emojipicker");
+    if (picker.style.display != "block") {
+        picker.style.display = "block"
+    } else {
+        picker.style.display = "none"
+    }
+}
