@@ -7,11 +7,11 @@ if (localStorage.getItem("currentServer")) {
 
 let state = {
     _currentChannel: "general",
-	members_list_shown: true,
-	show_blocked_msgs: true,
+    members_list_shown: true,
+    show_blocked_msgs: true,
     server: {},
     user: null,
-	user_keys: null,
+    user_keys: null,
     validator: null,
     validator_key: null,
     users: {},
@@ -38,14 +38,14 @@ let state = {
 };
 
 let emojis;
-fetch("emojis.json").then(async r =>{
-	if (!r.ok) {
-		console.warn("Failed to get emojis!")
-		emojis = []; // default to none
-		return;
-	}
+fetch("emojis.json").then(async r => {
+    if (!r.ok) {
+        console.warn("Failed to get emojis!")
+        emojis = []; // default to none
+        return;
+    }
 
-	emojis = await r.json();
+    emojis = await r.json();
 })
 
 userKeysUpdate();
@@ -53,17 +53,17 @@ let ws = null;
 const membersList = document.querySelector(".members_list");
 
 document.getElementById("memberlistbtn")?.addEventListener("click", () => {
-	if (state.members_list_shown)
-		membersList.remove();
-	else
-		document.querySelector(".server_ui").append(membersList);
+    if (state.members_list_shown)
+        membersList.remove();
+    else
+        document.querySelector(".server_ui").append(membersList);
 
-	state.members_list_shown = !state.members_list_shown;
+    state.members_list_shown = !state.members_list_shown;
 })
 
 function userKeysUpdate() {
-	state.user_keys = window.parent.roturExtension.user ?? {};
-	console.log("user keys updated", state.user_keys);
+    state.user_keys = window.parent.roturExtension.user ?? {};
+    console.log("user keys updated", state.user_keys);
 }
 
 function connectWebSocket() {
@@ -85,10 +85,10 @@ function escapeHTML(str) {
 }
 
 function replaceEmojis(str) {
-	for (const emoji of emojis)
-		str = str.replaceAll(":" + emoji.label.replaceAll(" ", "_") + ":", emoji.emoji);
+    for (const emoji of emojis)
+        str = str.replaceAll(":" + emoji.label.replaceAll(" ", "_") + ":", emoji.emoji);
 
-	return str;
+    return str;
 }
 
 function roturToken() {
@@ -415,7 +415,7 @@ function replaceImageLinks(text) {
 
 function formatMessageContent(raw) {
     if (typeof raw !== "string") raw = String(raw ?? "");
-	raw = replaceEmojis(raw);
+    raw = replaceEmojis(raw);
 
     const emojiRegex = /^\p{Extended_Pictographic}$/u;
     if (emojiRegex.test(raw)) return `<span style="font-size:2em;line-height:1">${raw}</span>`;
@@ -573,26 +573,26 @@ function updateChannelUnread(channelName) {
 
 var lastmsgid = null;
 function renderMessage(message) {
-	if (message && message.id) {
-		const mid = message.id;
+    if (message && message.id) {
+        const mid = message.id;
         state.messages[mid] = message;
         if (!message.id) message.id = mid;
     }
 
-	const prevmsg = state.messages[lastmsgid] ?? null;
-	lastmsgid = message.id;
-	const blocked = (state.user_keys["sys.blocked"] ?? []).includes(message["user"]);
-	if (blocked && !state.show_blocked_msgs) return;
+    const prevmsg = state.messages[lastmsgid] ?? null;
+    lastmsgid = message.id;
+    const blocked = (state.user_keys["sys.blocked"] ?? []).includes(message["user"]);
+    if (blocked && !state.show_blocked_msgs) return;
 
-	function actuallyRender() {
-		const timestamp = message["timestamp"];
-		const date = new Date(timestamp * 1000);
-		const shouldGroup = !blocked && message["user"] === (prevmsg ?? { user: "" })["user"]; 
-		const mdText = formatMessageContent(message["content"]);
-		const replyBlock = renderReplyExcerpt(message);
-		let html;
-		if (shouldGroup) {
-			html = `
+    function actuallyRender() {
+        const timestamp = message["timestamp"];
+        const date = new Date(timestamp * 1000);
+        const shouldGroup = !blocked && message["user"] === (prevmsg ?? { user: "" })["user"];
+        const mdText = formatMessageContent(message["content"]);
+        const replyBlock = renderReplyExcerpt(message);
+        let html;
+        if (shouldGroup) {
+            html = `
 			<div class="sing_msg extra">
 					${replyBlock}
 					<div class="msg_ctnt extra">
@@ -603,10 +603,10 @@ function renderMessage(message) {
 				</div>
 			</div>
 			`.trim();
-		} else {
-			const userColor = getUserColor(message["user"]);
-        let olkscr = `window.parent.launchSideBarApp('contacts', { name: '${escapeHTML(message["user"])}' })`;
-			html = `
+        } else {
+            const userColor = getUserColor(message["user"]);
+            let olkscr = `window.parent.launchSideBarApp('contacts', { name: '${escapeHTML(message["user"])}' })`;
+            html = `
 			<div class="sing_msg" data-id="${escapeHTML(message.id || "")}" data-user="${escapeHTML(message["user"])}">
 						${replyBlock}
 						<div class="msg_ctnt">
@@ -621,102 +621,105 @@ function renderMessage(message) {
 				</div>
 			</div>
 			`.trim();
-		}
-		const wrapper = document.createElement("div");
-		wrapper.innerHTML = html;
-		let repllkbtns = document.createElement("div");
-		repllkbtns.classList.add("msg_actions");
-		let replybtn = document.createElement("div");
-		replybtn.classList.add("button");
-		replybtn.classList.add("symb");
-		replybtn.innerText = "reply"
-		repllkbtns.appendChild(replybtn);
-		replybtn.onclick = () => {
-			if (state.editing) cancelEdit();
-			state.reply_to[state.currentChannel] = message;
-			if (canSend(state.currentChannel)) showreplyPrompt(message);
-		}
-		let deletebtn = document.createElement("div");
-		deletebtn.classList.add("button");
-		deletebtn.classList.add("symb");
-		deletebtn.innerText = "delete"
-		repllkbtns.appendChild(deletebtn);
-		deletebtn.onclick = () => {
-			ws.send(
-				JSON.stringify({
-					cmd: "message_delete",
-					channel: state.currentChannel,
-					id: message.id,
-				}),
-			);
-		}
-		let copybtn = document.createElement("div");
-		copybtn.classList.add("button");
-		copybtn.classList.add("symb");
-		copybtn.innerText = "content_copy"
-		repllkbtns.appendChild(copybtn);
-		copybtn.onclick = () => {
-			navigator.clipboard?.writeText(message.content || "").catch(() => { });
-		}
+        }
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = html;
+        let repllkbtns = document.createElement("div");
+        repllkbtns.classList.add("msg_actions");
+        let replybtn = document.createElement("div");
+        replybtn.classList.add("button");
+        replybtn.classList.add("symb");
+        replybtn.innerText = "reply"
+        repllkbtns.appendChild(replybtn);
+        replybtn.onclick = () => {
+            if (state.editing) cancelEdit();
+            state.reply_to[state.currentChannel] = message;
+            if (canSend(state.currentChannel)) showreplyPrompt(message);
+        }
 
-		const messageDiv = wrapper.firstElementChild;
-		messageDiv.classList.add("message");
-		messageDiv.appendChild(repllkbtns);
-    	return messageDiv;
-	}
+        if (message["user"] == state.user.username) {
+            let deletebtn = document.createElement("div");
+            deletebtn.classList.add("button");
+            deletebtn.classList.add("symb");
+            deletebtn.innerText = "delete"
+            repllkbtns.appendChild(deletebtn);
+            deletebtn.onclick = () => {
+                ws.send(
+                    JSON.stringify({
+                        cmd: "message_delete",
+                        channel: state.currentChannel,
+                        id: message.id,
+                    }),
+                );
+            }
+        }
+        let copybtn = document.createElement("div");
+        copybtn.classList.add("button");
+        copybtn.classList.add("symb");
+        copybtn.innerText = "content_copy"
+        repllkbtns.appendChild(copybtn);
+        copybtn.onclick = () => {
+            navigator.clipboard?.writeText(message.content || "").catch(() => { });
+        }
 
-	if (blocked) {
-		const blockedDiv = document.createElement("div");
-		const blockedHeader = document.createElement("div");
-		blockedHeader.classList.add("blockedheader");
+        const messageDiv = wrapper.firstElementChild;
+        messageDiv.classList.add("message");
+        messageDiv.appendChild(repllkbtns);
+        return messageDiv;
+    }
 
-		const blockedIcon = document.createElement('span');
-		blockedIcon.classList.add("symb");
-		blockedIcon.textContent = "block";
-		blockedHeader.appendChild(blockedIcon);
+    if (blocked) {
+        const blockedDiv = document.createElement("div");
+        const blockedHeader = document.createElement("div");
+        blockedHeader.classList.add("blockedheader");
 
-		const blockedText = document.createElement("span");
-		blockedText.textContent = "Blocked message —";
-		blockedHeader.appendChild(blockedText);
+        const blockedIcon = document.createElement('span');
+        blockedIcon.classList.add("symb");
+        blockedIcon.textContent = "block";
+        blockedHeader.appendChild(blockedIcon);
 
-		const blockedShowLink = document.createElement("a");
-		blockedShowLink.textContent = "Show";
+        const blockedText = document.createElement("span");
+        blockedText.textContent = "Blocked message —";
+        blockedHeader.appendChild(blockedText);
 
-		let node;
-		blockedShowLink.addEventListener("click", ev => {
-			ev.preventDefault();
+        const blockedShowLink = document.createElement("a");
+        blockedShowLink.textContent = "Show";
 
-			if (node) {
-				blockedShowLink.textContent = "Show";
-				blockedHeader.scrollIntoView();
-				node.remove();
-				node = undefined;
-				return;
-			}
+        let node;
+        blockedShowLink.addEventListener("click", ev => {
+            ev.preventDefault();
 
-			node = actuallyRender();
-			if (node) {
-				blockedDiv.appendChild(node);
-				blockedShowLink.textContent = "Hide";
-				node.scrollIntoView();
-			}
-		})
+            if (node) {
+                blockedShowLink.textContent = "Show";
+                blockedHeader.scrollIntoView();
+                node.remove();
+                node = undefined;
+                return;
+            }
 
-		blockedShowLink.href = "#";
-		blockedHeader.appendChild(blockedShowLink);
+            node = actuallyRender();
+            if (node) {
+                blockedDiv.appendChild(node);
+                blockedShowLink.textContent = "Hide";
+                node.scrollIntoView();
+            }
+        })
 
-		blockedDiv.appendChild(blockedHeader);
-		return blockedDiv;
-	}
+        blockedShowLink.href = "#";
+        blockedHeader.appendChild(blockedShowLink);
 
-	return actuallyRender();
+        blockedDiv.appendChild(blockedHeader);
+        return blockedDiv;
+    }
+
+    return actuallyRender();
 }
 
 function listMessages(messageList) {
     const chatArea = document.getElementById("msgs_list");
     chatArea.innerHTML = "";
     for (let message of messageList) {
-		const node = renderMessage(message);
+        const node = renderMessage(message);
         if (node) chatArea.appendChild(node);
     }
     chatArea.scrollTop = chatArea.scrollHeight;
@@ -743,7 +746,7 @@ function addMessage(messagePacket) {
 
 
 function changeChannel(channel) {
-	lastmsgid = null;
+    lastmsgid = null;
     state.currentChannel = channel;
     document
         .querySelectorAll(".single_chnl")
@@ -786,8 +789,8 @@ function getUserColor(username) {
 
 
 function renderMembers() {
-	const root = document.getElementsByClassName("members_lists")[0];
-	if (!root) return;
+    const root = document.getElementsByClassName("members_lists")[0];
+    if (!root) return;
     root.innerHTML = "";
 
     const owners = [];

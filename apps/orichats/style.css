@@ -588,5 +588,7 @@ div.blockedheader > a {
 #memberlistbtn {
 	background-color: transparent;
 	border: none;
-	color: white;
+	color: var(--col-txt1);
+    padding: 0;
+    font-size: 0;
 }
