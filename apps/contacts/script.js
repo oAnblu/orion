@@ -5,7 +5,7 @@ async function renderProfile(name) {
     const data = await res.json();
     document.querySelector('#prof_pfp').src = data.pfp;
     document.querySelector('#prof_name').textContent = data.username;
-    document.querySelector('#prof_more').innerHTML = `<a>${data.private ? '<i class="material-symbols-rounded">lock</i> Private' : '<i class="material-symbols-rounded">public</i> Public'}</a> • <a>${data.system}</a> • <a>${data.pronouns}</a>`;
+    document.querySelector('#prof_more').innerHTML = `<a>${data.private ? '<i class="material-symbols-rounded">lock</i> Private' : '<i class="material-symbols-rounded">public</i> Public'}</a> • <a class="${(data.system == "NovaOS") ? 'special':''}">${data.system}</a> • <a>${data.pronouns}</a>`;
     document.querySelector('#prof_abtme').textContent = data.bio.replace(/\n/g, ' ');
     document.querySelector('#prof_crds').textContent = data.currency;
     document.querySelector('#prof_flwrs').textContent = data.followers;
@@ -55,7 +55,7 @@ function renderICN(code, canvas) {
         else if (cmd === 'w') weight = parseFloat(cmds[++i]);
         else if (cmd === 'line') {
             const x1 = parseFloat(cmds[++i]), y1 = parseFloat(cmds[++i]),
-                x2 = parseFloat(cmds[++i]), y2 = parseFloat(cmds[++i]);
+                  x2 = parseFloat(cmds[++i]), y2 = parseFloat(cmds[++i]);
             ctx.beginPath();
             ctx.strokeStyle = color;
             ctx.lineWidth = weight;
@@ -74,7 +74,7 @@ function renderICN(code, canvas) {
             last = { x, y };
         } else if (cmd === 'square') {
             const x = parseFloat(cmds[++i]), y = parseFloat(cmds[++i]),
-                w = parseFloat(cmds[++i]), h = parseFloat(cmds[++i]);
+                  w = parseFloat(cmds[++i]), h = parseFloat(cmds[++i]);
             ctx.beginPath();
             ctx.strokeStyle = color;
             ctx.lineWidth = weight;
@@ -91,11 +91,9 @@ function renderICN(code, canvas) {
             const radius = parseFloat(cmds[++i]);
             let angleICN = parseFloat(cmds[++i]);
             let filledICN = parseFloat(cmds[++i]);
-
             let circleAngle = (angleICN * 10) - filledICN;
             let oldX = x + Math.sin(circleAngle * Math.PI / 180) * radius;
             let oldY = -y - Math.cos(circleAngle * Math.PI / 180) * radius;
-
             const steps = Math.floor(filledICN / 3) + 1;
             ctx.strokeStyle = color;
             ctx.lineWidth = weight;
@@ -112,8 +110,8 @@ function renderICN(code, canvas) {
             }
         } else if (cmd === 'ellipse') {
             const x = parseFloat(cmds[++i]), y = parseFloat(cmds[++i]),
-                width = parseFloat(cmds[++i]), hm = parseFloat(cmds[++i]),
-                dir = parseFloat(cmds[++i]) * Math.PI / 180;
+                  width = parseFloat(cmds[++i]), hm = parseFloat(cmds[++i]),
+                  dir = parseFloat(cmds[++i]) * Math.PI / 180;
             ctx.save();
             ctx.translate(x, -y);
             ctx.rotate(dir);
@@ -124,12 +122,21 @@ function renderICN(code, canvas) {
             ctx.arc(0, 0, width / 2, 0, Math.PI * 2);
             ctx.stroke();
             ctx.restore();
+        } else if (cmd === 'curve') {
+            const x1 = parseFloat(cmds[++i]), y1 = parseFloat(cmds[++i]),
+                  x2 = parseFloat(cmds[++i]), y2 = parseFloat(cmds[++i]),
+                  cx = parseFloat(cmds[++i]), cy = parseFloat(cmds[++i]);
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = weight;
+            ctx.moveTo(x1, -y1);
+            ctx.quadraticCurveTo(cx, -cy, x2, -y2);
+            ctx.stroke();
+            last = { x: x2, y: y2 };
         }
     }
     ctx.restore();
 }
-
-renderICN(`c #8b4513 w 2 line -13 -3 13 3 w 1 line 13 3 20 3 line 13 3 19 5 line 13 3 19 1`, document.getElementById("c"))
 
 loader.style.display = "flex";
 

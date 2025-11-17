@@ -170,3 +170,18 @@ body {
     align-items: center;
     background-color: var(--col-bg1);
 }
+
+.special {
+  font-weight: 800;
+  background: linear-gradient(90deg, #9a5fff, #d400ff, #ff3cac, #00b7ff, #b082ff);
+  background-size: 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: slide 2.5s linear infinite alternate;
+  text-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+}
+
+@keyframes slide {
+  0% { background-position: 0% }
+  100% { background-position: 100% }
+}
