@@ -35,6 +35,7 @@ let state = {
     get currentChannel() {
         return this._currentChannel;
     },
+    typingUsers: {}
 };
 
 let emojis;
@@ -225,6 +226,7 @@ function attachWsHandlers() {
                     setTimeout(() => {
                         if (typingMap.get(user) <= Date.now()) {
                             typingMap.delete(user);
+                            state.typingUsers[channel] = typingMap;
                             updateTypingIndicator();
                         }
                     }, 5000);

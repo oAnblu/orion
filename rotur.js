@@ -393,7 +393,7 @@ class RoturExtension {
 
         const e = document.createElement("iframe");
         e.id = "rotur-auth";
-        e.src = `https://rotur.dev/auth?system=NovaOS&styles=${encodeURIComponent(STYLE_URL)}`;
+        e.src = `https://rotur.dev/auth?system=orion&styles=${encodeURIComponent(STYLE_URL)}`;
         Object.assign(e.style, {
             width: "70%",
             height: "80%",
@@ -440,7 +440,9 @@ class RoturExtension {
         try {
             const response = await fetch(`https://social.rotur.dev/get_user?auth=${encodeURIComponent(token)}`);
 
-            if (!response.ok) throw new Error(`Authentication failed: ${response.status}`);
+            if (!response.ok) {
+                throw new Error(`Authentication failed: ${response.status}`)
+            };
 
             const packet = await response.json();
 
@@ -488,6 +490,7 @@ class RoturExtension {
 
         } catch (error) {
             this.authenticated = false;
+                say("<h1>Rotur is down. </h1>Looks like RoturTW's servers or their providers are down. Try again in a few minutes.", "failed")
             throw new Error(`Failed to login: ${error.message}`);
         }
     }
@@ -1671,7 +1674,7 @@ async function attemptConnection() {
     } else if (!roturExtension) {
         roturExtension = new RoturExtension();
     }
-    roturExtension.connectToServer({ DESIGNATION: "nva", SYSTEM: "NovaOS", VERSION: "2" });
+    roturExtension.connectToServer({ DESIGNATION: "nva", SYSTEM: "orion", VERSION: "2" });
 }
 
 async function logoutofrtr() {
@@ -1720,9 +1723,9 @@ async function roturTWEventCall(data) {
 
         })();
     } else if (data == "roturEXT_whenAccountUpdate") {
-		if (iframe.contentWindow?.userKeysUpdate)
-			iframe.contentWindow.userKeysUpdate();
-	} else if (data == "roturEXT_whenDisconnected") {
+        if (iframe.contentWindow?.userKeysUpdate)
+            iframe.contentWindow.userKeysUpdate();
+    } else if (data == "roturEXT_whenDisconnected") {
         attemptConnection();
     }
 }
