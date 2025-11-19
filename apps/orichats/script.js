@@ -1036,6 +1036,9 @@ window.addEventListener("DOMContentLoaded", () => {
             x.dataset.char = emoji.emoji;
             x.classList.add("single_emoji");
             x.title = emoji.label.replaceAll(" ", "_");
+            x.onclick = ()=> {
+                document.getElementById("mainTxtAr").value += `:${x.title}:`
+            }
             frag.appendChild(x);
         }
         container.appendChild(frag);

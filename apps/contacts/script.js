@@ -44,7 +44,7 @@ async function renderProfile(name) {
 function renderICN(code, canvas) {
     const ctx = canvas.getContext('2d');
     ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.translate(canvas.width / 2 - 2, canvas.height / 2 - 2);
     ctx.lineCap = 'round';
     let last = { x: 0, y: 0 };
     const cmds = code.trim().split(/\s+/);
