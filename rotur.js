@@ -1691,7 +1691,7 @@ async function roturTWEventCall(data) {
         [...document.getElementsByClassName("username_display")].forEach(element => {
             element.innerText = roturExtension.user.username;
         })
-        if (localStorage.getItem("orion_auto_daily") != false) {
+        if (settings.get("auto_daily") == true) {
             fetch("https://social.rotur.dev/claim_daily?auth=" + roturExtension.userToken).then((response) => {
                 if (response.ok) {
                     notify(`You got the daily credit!`)
@@ -1726,6 +1726,7 @@ async function roturTWEventCall(data) {
         if (iframe.contentWindow?.userKeysUpdate)
             iframe.contentWindow.userKeysUpdate();
     } else if (data == "roturEXT_whenDisconnected") {
+        await say("Disconnected, click ok to reconnect")
         attemptConnection();
     }
 }

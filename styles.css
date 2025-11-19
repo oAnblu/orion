@@ -130,6 +130,45 @@ div#toastdiv {
     width: 200px;
     height: 100%;
 
+    &>#orionIconCol {
+        display: none;
+        margin-top: 2em;
+    }
+
+    &.collapsed {
+        width: fit-content;
+        align-items: center;
+
+        & .actBtns {
+            min-width: 4.5em;
+            flex-direction: column;
+            height: 2em;
+            margin: 0 .5em;
+        }
+
+        &>#orionIconCol {
+            display: block;
+            height: 30px;
+            width: 30px;
+        }
+
+        &>#mainHead {
+            display: none;
+        }
+
+        & .grid {
+            padding: 0;
+
+            & .onebtn {
+                display: flex;
+    justify-content: center;
+                a {
+                    display: none;
+                }
+            }
+        }
+    }
+
     & .actBtns {
         width: calc(100% - 2em);
     }
@@ -265,6 +304,7 @@ div#toastdiv {
         gap: 1em;
         padding: .5em;
         background-color: var(--col-bg2);
+
         &>i {
             font-size: 20px;
             cursor: pointer;
@@ -687,4 +727,10 @@ dialog {
 
 #overlay.active {
     pointer-events: all;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: .5;
+    filter: blur(1px);
 }

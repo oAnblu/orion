@@ -285,12 +285,7 @@ function attachWsHandlers() {
 
 function showError(msg) {
     console.error(msg);
-    const box = document.getElementById("errorBox");
-    if (box) {
-        box.style.display = "flex";
-        const em = document.getElementById("errorMessage");
-        if (em) em.textContent = msg;
-    }
+    window.parent.say(msg, "failed");
 }
 
 function listChannels(channelList) {

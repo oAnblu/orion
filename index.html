@@ -13,6 +13,7 @@
 
 <body>
     <div id="sidebar">
+        <img src="../../oclogo.png" height="50" id="orionIconCol">
         <div id="mainHead">OrionClient</div>
         <div id="loader"></div>
         <div id="persohome">
@@ -31,7 +32,7 @@
                 <div class="btn" onclick="document.getElementById('settings').showModal()"><i
                         class="material-symbols-rounded">tune</i></div>
                 <div class="divider"></div>
-                <div class="btn"><i class="material-symbols-rounded">left_panel_close</i></div>
+                <div class="btn" onclick="sidebartoggle()"><i class="material-symbols-rounded">left_panel_close</i></div>
             </div>
         </div>
     </div>
@@ -90,6 +91,13 @@
         <div class="sing_setting">
             <span>Claim daily credits on login</span>
             <div class="checkbox" data-setting="auto_daily">
+                <i class="ball"></i>
+            </div>
+        </div>
+        <h3>Originchats</h3>
+        <div class="sing_setting disabled">
+            <span>Don't tell others that I'm typing</span>
+            <div class="checkbox" data-setting="send_typing">
                 <i class="ball"></i>
             </div>
         </div>

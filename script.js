@@ -310,26 +310,26 @@ let startX = 0;
 let startWidth = 0;
 
 divider.addEventListener('mousedown', e => {
-    isDragging = true;
-    startX = e.clientX;
-    startWidth = sidebarCont.offsetWidth;
-    overlay.classList.add('active');
-    document.body.style.userSelect = 'none';
+	isDragging = true;
+	startX = e.clientX;
+	startWidth = sidebarCont.offsetWidth;
+	overlay.classList.add('active');
+	document.body.style.userSelect = 'none';
 });
 
 document.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    const dx = startX - e.clientX;
-    let newWidth = startWidth + dx;
-    if (newWidth < 0) newWidth = 0;
-    sidebarCont.style.flexBasis = newWidth + 'px';
+	if (!isDragging) return;
+	const dx = startX - e.clientX;
+	let newWidth = startWidth + dx;
+	if (newWidth < 0) newWidth = 0;
+	sidebarCont.style.flexBasis = newWidth + 'px';
 });
 
 document.addEventListener('mouseup', e => {
-    if (!isDragging) return;
-    isDragging = false;
-    overlay.classList.remove('active');
-    document.body.style.userSelect = '';
+	if (!isDragging) return;
+	isDragging = false;
+	overlay.classList.remove('active');
+	document.body.style.userSelect = '';
 });
 
 sidebarCont.style.flex = '0 0 0';
@@ -337,36 +337,40 @@ sidebarCont.style.overflow = 'hidden';
 
 
 function launchSideBarApp(name, data) {
-    sidebarCont.style.display = 'flex';
-    setTimeout(() => sidebarCont.style.flex = '2', 50);
-    sidebarappframe.src = "apps/" + name;
-    sidebarappframe.onload = () => {
-        try { sidebarappframe.contentWindow.greenflag({ data }) } catch {}
-    }
+	sidebarCont.style.display = 'flex';
+	setTimeout(() => sidebarCont.style.flex = '2', 50);
+	sidebarappframe.src = "apps/" + name;
+	sidebarappframe.onload = () => {
+		try { sidebarappframe.contentWindow.greenflag({ data }) } catch { }
+	}
 }
 
 function closeSideBar() {
-    sidebarCont.style.flex = '0';
-    setTimeout(() => sidebarCont.style.display = 'none', 200);
+	sidebarCont.style.flex = '0';
+	setTimeout(() => sidebarCont.style.display = 'none', 200);
 }
+const settings = {
+	data: JSON.parse(localStorage.getItem("orion_settings") || "{}"),
+	get(k) { return this.data[k]; },
+	set(k, v) {
+		this.data[k] = v;
+		localStorage.setItem("orion_settings", JSON.stringify(this.data));
+	}
+};
 
 document.querySelectorAll(".checkbox").forEach(item => {
-	var dataSetting = item.getAttribute("data-setting");
-	if (localStorage.getItem("orion_" + dataSetting) != false) {
-		item.classList.add("enabled")
-	} else {
-		item.classList.remove("enabled")
-	}
-	item.onclick = () => {
-		if (dataSetting) {
-			if (item.classList.contains("enabled")) {
-				localStorage.setItem("orion_" + dataSetting, false)
-				item.classList.remove("enabled")
-			} else {
-				localStorage.setItem("orion_" + dataSetting, true)
-				item.classList.add("enabled")
-			}
-		}
-	}
-})
+	const key = item.getAttribute("data-setting");
+	if (settings.get(key)) item.classList.add("enabled");
+	else item.classList.remove("enabled");
 
+	item.onclick = () => {
+		const v = !item.classList.contains("enabled");
+		settings.set(key, v);
+		item.classList.toggle("enabled");
+	};
+});
+
+
+function sidebartoggle() {
+	sidebar.classList.toggle("collapsed");
+}
