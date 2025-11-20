@@ -569,7 +569,8 @@ function renderMessage(message) {
 
     const prevmsg = state.messages[lastmsgid] ?? null;
     lastmsgid = message.id;
-    const blocked = (state.user_keys["sys.blocked"] ?? []).includes(message["user"]);
+	const self = message["user"] === state.user.username;
+    const blocked = !self && (state.user_keys["sys.blocked"] ?? []).includes(message["user"]);
     if (blocked && !state.show_blocked_msgs) return;
 
     function actuallyRender() {
@@ -1006,7 +1007,7 @@ function watchForStopTyping() {
 }
 
 function sendTyping() {
-    ws.send({ cmd: 'typing', channel: state.currentChannel });
+    ws.send(JSON.stringify({ cmd: 'typing', channel: state.currentChannel }));
 }
 
 window.addEventListener("DOMContentLoaded", () => {
