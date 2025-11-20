@@ -662,3 +662,7 @@ div.blockedheader>a {
     position: fixed;
     box-shadow: 0 -8px 0px var(--col-bg2);
 }
+
+.msg_ctnt .name, .msg_ctnt .mention, .msg_ctnt .pfp {
+	cursor: pointer;
+}
